@@ -1,4 +1,4 @@
-/* Дизайн: варіант 1 «Теплий майстер» (docs/03-design.md) */
+/* Дизайн: «Теплий майстер», структура «Ціни-перший» (docs/03-design.md) */
 :root {
   --bg: #fdf6ea;
   --tint: #faeeda;
@@ -37,7 +37,7 @@ body {
   padding-bottom: 76px;
 }
 h1, h2, h3 { line-height: 1.2; margin: 0 0 .5em; }
-h1 { font-size: clamp(28px, 6vw, 44px); font-weight: 800; }
+h1 { font-size: clamp(28px, 6vw, 46px); font-weight: 800; max-width: 20ch; }
 h2 { font-size: clamp(24px, 4.5vw, 32px); font-weight: 800; }
 h3 { font-size: 19px; font-weight: 700; }
 p { margin: 0 0 1em; }
@@ -53,15 +53,16 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
 .logo { display: flex; align-items: center; gap: 10px; color: inherit; text-decoration: none; font-weight: 800; font-size: 17px; line-height: 1.1; }
 .logo small { display: block; font-weight: 500; font-size: 13px; opacity: .8; }
 .logo__mark { width: 36px; height: 36px; border-radius: 10px; background: var(--mark-bg); color: var(--mark-text); display: grid; place-items: center; }
+.menu { display: none; gap: 24px; font-weight: 500; font-size: 15px; }
+.menu a { color: inherit; text-decoration: none; }
+.menu a:hover { text-decoration: underline; }
 .top__phone { color: inherit; font-weight: 700; text-decoration: none; white-space: nowrap; }
 
 .hero { background: var(--tint); padding: 40px 0 48px; }
-.hero__in { max-width: 720px; }
+.hero__row { display: flex; flex-wrap: wrap; gap: 22px 48px; align-items: flex-end; }
 .eyebrow { color: var(--accent); font-weight: 700; font-size: 15px; margin-bottom: .6em; }
-.lead { font-size: 18px; color: var(--muted); }
-.cta { display: flex; flex-wrap: wrap; gap: 10px; margin: 22px 0; }
-.ticks { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
-.ticks li::before { content: "✓"; color: var(--accent); font-weight: 800; margin-right: 8px; }
+.lead { flex: 1 1 320px; font-size: 18px; color: var(--muted); margin: 0; max-width: 56ch; }
+.cta { display: flex; flex-wrap: wrap; gap: 10px; }
 .ph {
   background: var(--ph); border-radius: var(--radius); color: var(--ph-text);
   display: grid; place-items: center; text-align: center; padding: 16px; font-weight: 500;
@@ -79,6 +80,8 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
 
 .sec { padding: 56px 0; }
 .sec--tint { background: var(--tint); }
+.sec__head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 8px 32px; }
+.sec__head h2, .sec__head .sub { margin: 0; }
 .sub { color: var(--muted); max-width: 640px; }
 
 .cards { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); margin-top: 24px; }
@@ -86,14 +89,13 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
 .card p { color: var(--muted); margin: 0; font-size: 16px; }
 .card__ico { width: 44px; height: 44px; border-radius: 12px; background: var(--ph); color: var(--accent); display: grid; place-items: center; margin-bottom: 12px; }
 
-.price { display: grid; gap: 10px; margin-top: 20px; }
-.price details { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); }
-.price summary { padding: 16px 20px; font-weight: 700; cursor: pointer; list-style: none; display: flex; justify-content: space-between; }
-.price summary::after { content: "+"; color: var(--accent); font-weight: 800; }
-.price details[open] summary::after { content: "–"; }
-.price ul { list-style: none; margin: 0; padding: 0 20px 12px; }
+/* Прайс: усі групи розгорнуті, у сітці карток */
+.price { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); margin-top: 24px; align-items: start; }
+.price__group { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px 10px; }
+.price__group h3 { margin-bottom: 6px; }
+.price ul { list-style: none; margin: 0; padding: 0; }
 .price li { display: flex; justify-content: space-between; gap: 16px; padding: 9px 0; border-top: 1px dashed var(--line); font-size: 16px; }
-.price b { white-space: nowrap; color: var(--strong); }
+.price b { white-space: nowrap; color: var(--strong); text-align: right; }
 
 .gallery { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); margin-top: 24px; }
 .gallery .ph { aspect-ratio: 1; }
@@ -136,6 +138,7 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
 @media (min-width: 800px) {
   body { padding-bottom: 0; }
   .bar { display: none; }
+  .menu { display: flex; }
   .hero { padding: 72px 0; }
   .form-wrap { grid-template-columns: 1fr 1.1fr; gap: 48px; align-items: start; }
 }

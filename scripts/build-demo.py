@@ -11,7 +11,6 @@
 import base64
 import json
 import mimetypes
-import re
 from datetime import date
 from pathlib import Path
 
@@ -49,12 +48,11 @@ def main() -> None:
         '<script src="main.js"></script>',
         f"<script>window.__DEMO__ = true; window.__CONTENT__ = {content};</script>\n<script>\n{js}\n</script>",
     )
-    html = re.sub(
-        r'<div class="draft">.*?</div>',
-        f'<div class="draft">Демо-версія для перегляду ({today}). Фото робіт і Telegram ще не додані; форма заявки нічого не надсилає</div>',
-        html,
-        count=1,
-        flags=re.S,
+    # Плашка «Чернетка» на сайті прибрана (2026-10-07); у демо додаємо свою плашку одразу після <body>.
+    html = html.replace(
+        "<body>",
+        f'<body>\n<div class="draft">Демо-версія для перегляду ({today}). Фото робіт і Telegram ще не додані; форма заявки нічого не надсилає</div>',
+        1,
     )
     html = html.replace("<title>", "<title>[Демо] ", 1)
     html = html.replace('<meta name="viewport"', '<meta name="robots" content="noindex">\n<meta name="viewport"', 1)

@@ -18,12 +18,13 @@ async function loadContent() {
   }
 }
 
+// Прайс показуємо повністю (без згортання): кожна група — картка в сітці.
 function renderPrices(data) {
-  document.getElementById("price").innerHTML = (data?.groups || []).map((g, i) => `
-    <details${i === 0 ? " open" : ""}>
-      <summary>${esc(g.title)}</summary>
+  document.getElementById("price").innerHTML = (data?.groups || []).map((g) => `
+    <article class="price__group">
+      <h3>${esc(g.title)}</h3>
       <ul>${(g.items || []).map((it) => `<li><span>${esc(it.name)}</span><b>${esc(it.price)}</b></li>`).join("")}</ul>
-    </details>`).join("");
+    </article>`).join("");
 }
 
 function renderPhotos(data) {

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Збірка та ремонт меблів у Хмельницькому</title>
-<meta name="description" content="Акуратна збірка нових меблів і легкий ремонт старих у Хмельницькому та області. Кухні, шафи, ліжка, дивани, офісні меблі. Виїзд майстра.">
+<meta name="description" content="Акуратна збірка нових меблів і легкий ремонт старих у Хмельницькому та районі. Кухні, шафи, ліжка, дивани, офісні меблі. Ціни на сайті. Виїзд майстра.">
 <meta name="theme-color" content="#633806">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,16 +16,13 @@
   "@type": "HomeAndConstructionBusiness",
   "name": "Збірка та ремонт меблів — Хмельницький",
   "telephone": "+380969758615",
-  "areaServed": "Хмельницький",
+  "areaServed": "Хмельницький та район",
   "address": {"@type": "PostalAddress", "addressLocality": "Хмельницький", "addressCountry": "UA"},
   "priceRange": "₴₴"
 }
 </script>
 </head>
 <body>
-
-<!-- ЧЕРНЕТКА: видалити цей блок перед публікацією -->
-<div class="draft">Чернетка: Telegram-нік і фото робіт ще не додані</div>
 
 <header class="top">
   <div class="wrap top__in">
@@ -35,6 +32,12 @@
       </span>
       <span>Збірка меблів<small>Хмельницький</small></span>
     </a>
+    <nav class="menu" aria-label="Розділи">
+      <a href="#prais">Ціни</a>
+      <a href="#poslugy">Що робимо</a>
+      <a href="#roboty">Роботи</a>
+      <a href="#zaiavka">Заявка</a>
+    </nav>
     <a class="top__phone" href="tel:+380969758615">096 975 86 15</a>
   </div>
 </header>
@@ -42,11 +45,11 @@
 <main>
 
   <section class="hero">
-    <div class="wrap hero__in">
-      <div>
-        <p class="eyebrow">Майстер з виїздом по місту та області</p>
-        <h1>Зберемо нові меблі та&nbsp;полагодимо старі — акуратно і&nbsp;без&nbsp;зайвого клопоту</h1>
-        <p class="lead">Кухні, шафи, ліжка, дивани, офісні меблі. Регулювання, заміна петель і фурнітури, дрібний ремонт.</p>
+    <div class="wrap">
+      <p class="eyebrow">Майстер з виїздом по Хмельницькому та району</p>
+      <h1>Збірка та ремонт меблів у&nbsp;Хмельницькому. Ціни&nbsp;— одразу тут</h1>
+      <div class="hero__row">
+        <p class="lead">Акуратно зберемо нові меблі та полагодимо старі. Кухні, шафи, ліжка, дивани, офісні меблі. Вартість називаємо до початку роботи.</p>
         <div class="cta">
           <a class="btn btn--main" href="tel:+380969758615">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2"/></svg>
@@ -54,15 +57,22 @@
           </a>
           <a class="btn btn--line" href="#zaiavka">Залишити заявку</a>
         </div>
-        <ul class="ticks">
-          <li>Ціну називаємо до початку роботи</li>
-          <li>Прибираємо за собою</li>
-        </ul>
       </div>
     </div>
   </section>
 
-  <section class="sec" id="poslugy">
+  <section class="sec" id="prais">
+    <div class="wrap">
+      <div class="sec__head">
+        <h2>Ціни</h2>
+        <p class="sub">Точну вартість називаємо після фото або огляду: залежить від розміру та складності.</p>
+      </div>
+      <!-- Прайс береться з content/prices.json (редагується через адмінку) -->
+      <div class="price" id="price"></div>
+    </div>
+  </section>
+
+  <section class="sec sec--tint" id="poslugy">
     <div class="wrap">
       <h2>Що робимо</h2>
       <div class="cards">
@@ -87,15 +97,6 @@
           <p>Акуратно розберемо меблі перед переїздом і зберемо на новому місці.</p>
         </article>
       </div>
-    </div>
-  </section>
-
-  <section class="sec sec--tint" id="prais">
-    <div class="wrap">
-      <h2>Ціни</h2>
-      <p class="sub">Точну вартість називаємо після фото або огляду: залежить від розміру та складності.</p>
-      <!-- Прайс береться з content/prices.json (редагується через адмінку) -->
-      <div class="price" id="price"></div>
     </div>
   </section>
 
@@ -144,7 +145,7 @@
 
 <footer class="foot">
   <div class="wrap">
-    <p>Збірка та ремонт меблів · Хмельницький та область</p>
+    <p>Збірка та ремонт меблів · Хмельницький та район</p>
     <p><a href="tel:+380969758615">096 975 86 15</a></p>
   </div>
 </footer>
