@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Адмінка сайту</title>
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<section class="login" id="login-view" hidden>
+  <form class="box" id="login-form">
+    <h1>Вхід в адмінку</h1>
+    <label>Логін
+      <input name="login" autocomplete="username" required>
+    </label>
+    <label>Пароль
+      <input name="password" type="password" autocomplete="current-password" required>
+    </label>
+    <button class="primary" type="submit">Увійти</button>
+    <p class="msg" id="login-msg" role="alert"></p>
+  </form>
+</section>
+
+<div id="app-view" hidden>
+  <header class="head">
+    <strong>Адмінка</strong>
+    <nav class="tabs" role="tablist">
+      <button role="tab" data-tab="prices" aria-selected="true">Прайс</button>
+      <button role="tab" data-tab="photos">Фото</button>
+      <button role="tab" data-tab="password">Пароль</button>
+    </nav>
+    <span class="head__right">
+      <a href="/" target="_blank" rel="noopener">Сайт ↗</a>
+      <button class="link" id="logout">Вийти</button>
+    </span>
+  </header>
+
+  <main class="main">
+    <section data-panel="prices">
+      <div class="bar">
+        <h2>Прайс</h2>
+        <button class="primary" data-save="prices">Зберегти прайс</button>
+      </div>
+      <p class="hint">Змінюйте назви та ціни прямо в полях. Стрілки ↑↓ змінюють порядок. Зміни з'являться на сайті після натискання «Зберегти».</p>
+      <div id="groups"></div>
+      <button class="add" id="add-group">+ Додати групу</button>
+    </section>
+
+    <section data-panel="photos" hidden>
+      <div class="bar">
+        <h2>Фото</h2>
+        <button class="primary" data-save="photos">Зберегти фото</button>
+      </div>
+      <p class="hint">Фото з телефону автоматично зменшуються перед завантаженням. Зміни з'являться на сайті після натискання «Зберегти».</p>
+      <p class="hint">Галерея «Наші роботи». Порожнє місце показується на сайті як заглушка.</p>
+      <div class="gallery" id="gallery"></div>
+      <button class="add" id="add-photo">+ Додати місце для фото</button>
+    </section>
+
+    <section data-panel="password" hidden>
+      <h2>Зміна пароля</h2>
+      <form class="box" id="password-form">
+        <input name="username" autocomplete="username" hidden>
+        <label>Поточний пароль
+          <input name="current" type="password" autocomplete="current-password" required>
+        </label>
+        <label>Новий пароль (мінімум 10 символів)
+          <input name="next" type="password" autocomplete="new-password" minlength="10" required>
+        </label>
+        <label>Повторіть новий пароль
+          <input name="repeat" type="password" autocomplete="new-password" minlength="10" required>
+        </label>
+        <button class="primary" type="submit">Змінити пароль</button>
+        <p class="msg" id="password-msg" role="alert"></p>
+      </form>
+      <p class="hint">Після зміни пароля на інших пристроях доведеться увійти знову.</p>
+    </section>
+  </main>
+</div>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script src="admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "name": "zbirka-mebliv",
+  "private": true,
+  "scripts": {
+    "dev": "WRANGLER_SEND_METRICS=false wrangler pages dev --port 8788 --ip 127.0.0.1",
+    "deploy": "wrangler pages deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4"
+  }
+}

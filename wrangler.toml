@@ -1,0 +1,15 @@
+# Налаштування Cloudflare Pages (docs/05-hosting-domain.md, docs/07-admin.md).
+name = "zbirka-mebliv"
+pages_build_output_dir = "site"
+compatibility_date = "2026-10-01"
+
+# Єдине сховище: прайс, фото (ключі photo:*), пароль і сесії адмінки.
+# id замінити на справжній після створення: npx wrangler kv namespace create CONTENT
+[[kv_namespaces]]
+binding = "CONTENT"
+id = "REPLACE_WITH_KV_NAMESPACE_ID"
+
+# Секрети (НЕ записувати сюди), задаються в панелі Cloudflare або командою
+#   npx wrangler pages secret put <НАЗВА>
+#   ADMIN_LOGIN, ADMIN_PASSWORD  — початковий вхід в адмінку
+#   TG_BOT_TOKEN, TG_CHAT_ID     — заявки в Telegram
