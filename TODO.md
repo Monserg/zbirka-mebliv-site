@@ -29,7 +29,7 @@
 
 - [ ] Вписати в `site/index.html` Telegram-нік (місця позначені `TODO`)
 - [x] Прибрати червону плашку «Чернетка» в `site/index.html` (2026-10-07)
-- [ ] Перезібрати демо: `python3 scripts/build-demo.py`
+- [x] Перезібрати демо для клієнта (2026-10-07): `dist/zbirka-mebliv-demo.html`
 - [ ] Створити Telegram-бота і отримати chat_id ([docs/04-telegram-leads.md](docs/04-telegram-leads.md))
 - [ ] Зареєструвати безкоштовний акаунт Cloudflare (робить власник)
 
