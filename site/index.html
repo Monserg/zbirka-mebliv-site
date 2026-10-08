@@ -27,6 +27,10 @@
 
 <header class="top">
   <div class="wrap top__in">
+    <!-- На телефоні замість значка логотипа — кнопка бокового меню (бургер) -->
+    <button class="burger" id="burger" type="button" aria-label="Відкрити меню" aria-controls="drawer" aria-expanded="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+    </button>
     <a href="#" class="logo">
       <span class="logo__mark" aria-hidden="true">
         <svg viewBox="0 0 24 24"><path d="M13 10l7.383 7.418a2.091 2.091 0 0 1 0 2.967a2.11 2.11 0 0 1 -2.976 0l-7.407 -7.385"/><path d="M6.293 15.293l2.586 -2.586a1 1 0 0 0 0 -1.414l-.586 -.586l2.293 -2.293l4.293 -4.293l3 3l-4.293 4.293l-2.293 2.293l-.586 -.586a1 1 0 0 0 -1.414 0l-2.586 2.586"/></svg>
@@ -46,6 +50,27 @@
     </a>
   </div>
 </header>
+
+<!-- Бокове меню для телефона (відкривається бургером у шапці) -->
+<div class="drawer" id="drawer" inert>
+  <div class="drawer__bg" data-close></div>
+  <nav class="drawer__panel" aria-label="Розділи">
+    <div class="drawer__head">
+      <span class="drawer__title">Майстер Меблів</span>
+      <button class="drawer__close" type="button" aria-label="Закрити меню" data-close>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6l-12 12"/><path d="M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <a class="drawer__link" href="#prais">Ціни</a>
+    <a class="drawer__link" href="#poslugy">Що робимо</a>
+    <a class="drawer__link" href="#roboty">Роботи</a>
+    <a class="drawer__link" href="#zaiavka">Заявка</a>
+    <div class="drawer__contacts">
+      <a href="tel:+380969758615">096 975 86 15 · Артем</a>
+      <a href="https://t.me/+380969758615" target="_blank" rel="noopener">Написати у Telegram</a>
+    </div>
+  </nav>
+</div>
 
 <main>
 
@@ -158,6 +183,25 @@
     </a>
   </div>
 </footer>
+
+<!-- Перегляд фото роботи на повний екран (відкривається тапом по фото в галереї) -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Перегляд фото" hidden>
+  <button class="lightbox__close" type="button" aria-label="Закрити" data-close>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6l-12 12"/><path d="M6 6l12 12"/></svg>
+  </button>
+  <div class="lightbox__stage" data-close>
+    <img class="lightbox__img" id="lightbox-img" alt="">
+  </div>
+  <div class="lightbox__bar">
+    <button class="lightbox__nav" type="button" id="lightbox-prev" aria-label="Попереднє фото">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6l6 6"/></svg>
+    </button>
+    <p class="lightbox__cap"><span id="lightbox-cap"></span><span class="lightbox__count" id="lightbox-count"></span></p>
+    <button class="lightbox__nav" type="button" id="lightbox-next" aria-label="Наступне фото">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6l-6 6"/></svg>
+    </button>
+  </div>
+</div>
 
 <nav class="bar" aria-label="Швидкий зв'язок">
   <a class="btn btn--main" href="tel:+380969758615">Подзвонити</a>
