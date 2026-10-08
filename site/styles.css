@@ -51,12 +51,16 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
 .top { background: var(--head-bg); color: var(--head-text); border-bottom: 1px solid var(--head-line); position: sticky; top: 0; z-index: 10; }
 .top__in { display: flex; align-items: center; justify-content: space-between; min-height: 60px; gap: 12px; }
 .logo { display: flex; align-items: center; gap: 10px; color: inherit; text-decoration: none; font-weight: 800; font-size: 17px; line-height: 1.1; }
+.logo > span { white-space: nowrap; }
 .logo small { display: block; font-weight: 500; font-size: 13px; opacity: .8; }
 .logo__mark { width: 36px; height: 36px; border-radius: 10px; background: var(--mark-bg); color: var(--mark-text); display: grid; place-items: center; }
 .menu { display: none; gap: 24px; font-weight: 500; font-size: 15px; }
 .menu a { color: inherit; text-decoration: none; }
 .menu a:hover { text-decoration: underline; }
-.top__phone { color: inherit; font-weight: 700; text-decoration: none; white-space: nowrap; }
+/* Телефон у шапці. На телефоні: іконка зліва, номер та ім'я майстра у два рядки; на комп'ютері — в один рядок. */
+.top__phone { flex: none; display: grid; grid-template-columns: auto auto; column-gap: 6px; align-items: center; color: inherit; font-weight: 700; font-size: 15px; line-height: 1.15; text-decoration: none; white-space: nowrap; }
+.top__phone svg { grid-row: 1 / 3; width: 18px; height: 18px; }
+.top__name { grid-column: 2; font-weight: 500; font-size: 13px; opacity: .85; }
 
 .hero { background: var(--tint); padding: 40px 0 48px; }
 .hero__row { display: flex; flex-wrap: wrap; gap: 22px 48px; align-items: flex-end; }
@@ -126,6 +130,9 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
 .foot { background: var(--foot-bg); color: var(--foot-text); padding: 28px 0; font-size: 15px; }
 .foot p { margin: 0 0 4px; }
 .foot a { color: inherit; }
+.foot__in { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.foot__admin { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 10px; opacity: .55; transition: opacity .15s, background .15s; }
+.foot__admin:hover, .foot__admin:focus-visible { opacity: 1; background: rgba(255,255,255,.1); }
 
 .bar {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
@@ -139,6 +146,9 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
   body { padding-bottom: 0; }
   .bar { display: none; }
   .menu { display: flex; }
+  .top__phone { display: flex; font-size: inherit; }
+  .top__name { font-size: inherit; }
+  .top__name::before { content: "· "; }
   .hero { padding: 72px 0; }
   .form-wrap { grid-template-columns: 1fr 1.1fr; gap: 48px; align-items: start; }
 }

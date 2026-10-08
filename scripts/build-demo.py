@@ -9,6 +9,7 @@
 Результат:                  dist/zbirka-mebliv-demo.html
 """
 import base64
+import re
 import json
 import mimetypes
 from datetime import date
@@ -54,6 +55,8 @@ def main() -> None:
         f'<body>\n<div class="draft">Демо-версія для перегляду ({today}). Фото робіт і Telegram ще не додані; форма заявки нічого не надсилає</div>',
         1,
     )
+    # Кнопки входу в адмінку (шестерня в підвалі) у демо немає: адмінка працює лише на Cloudflare.
+    html = re.sub(r'\s*<a class="foot__admin".*?</a>', "", html, count=1, flags=re.S)
     html = html.replace("<title>", "<title>[Демо] ", 1)
     html = html.replace('<meta name="viewport"', '<meta name="robots" content="noindex">\n<meta name="viewport"', 1)
 

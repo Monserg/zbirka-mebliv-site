@@ -44,7 +44,7 @@ zbirka-mebliv-site/
 │       ├── logout.js          POST /api/admin/logout
 │       ├── me.js              GET  /api/admin/me
 │       ├── prices.js          PUT  /api/admin/prices  {groups}
-│       ├── photos.js          PUT  /api/admin/photos  {gallery}
+│       ├── photos.js          PUT  /api/admin/photos  {gallery}; видаляє з KV фото, яких у галереї вже немає
 │       ├── upload.js          POST /api/admin/upload  multipart "file" → {url}
 │       └── password.js        POST /api/admin/password {current, next}
 ├── lib/util.js                паролі (PBKDF2), сесії, читання контенту
