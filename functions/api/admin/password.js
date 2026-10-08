@@ -7,7 +7,7 @@ export async function onRequestPost({ request, env, data }) {
   try {
     body = await request.json();
   } catch {
-    return json({ error: "Bad request" }, 400);
+    return json({ error: "Некоректний запит" }, 400);
   }
   const current = String(body.current || "");
   const next = String(body.next || "");

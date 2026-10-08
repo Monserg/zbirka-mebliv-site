@@ -8,7 +8,7 @@ export async function onRequestPut({ request, env }) {
   try {
     body = await request.json();
   } catch {
-    return json({ error: "Bad request" }, 400);
+    return json({ error: "Некоректний запит" }, 400);
   }
   const groups = body.groups;
   if (!Array.isArray(groups) || groups.length > 30) return json({ error: "Забагато груп (максимум 30)" }, 400);

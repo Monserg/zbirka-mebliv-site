@@ -5,7 +5,7 @@ import { json, getSession } from "../../../lib/util.js";
 export async function onRequest({ request, env, next, data }) {
   if (!env.CONTENT) return json({ error: "Сховище не підключено (KV CONTENT)" }, 500);
   if (request.method !== "GET" && request.headers.get("X-Admin") !== "1") {
-    return json({ error: "Bad request" }, 400);
+    return json({ error: "Некоректний запит" }, 400);
   }
   if (new URL(request.url).pathname === "/api/admin/login") return next();
 

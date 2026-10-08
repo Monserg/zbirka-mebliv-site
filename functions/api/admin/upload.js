@@ -10,7 +10,7 @@ export async function onRequestPost({ request, env }) {
   try {
     file = (await request.formData()).get("file");
   } catch {
-    return json({ error: "Bad request" }, 400);
+    return json({ error: "Некоректний запит" }, 400);
   }
   if (!file || typeof file !== "object") return json({ error: "Файл не отримано" }, 400);
   const ext = TYPES[file.type];

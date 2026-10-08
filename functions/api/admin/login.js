@@ -14,7 +14,7 @@ export async function onRequestPost({ request, env }) {
   try {
     body = await request.json();
   } catch {
-    return json({ error: "Bad request" }, 400);
+    return json({ error: "Некоректний запит" }, 400);
   }
   const login = String(body.login || "").trim();
   const password = String(body.password || "");

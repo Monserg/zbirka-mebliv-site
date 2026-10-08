@@ -14,7 +14,7 @@ async function api(path, { method = "GET", body, form } = {}) {
   let data = {};
   try { data = await res.json(); } catch {}
   if (res.status === 401 && path !== "/api/admin/login") showLogin();
-  if (!res.ok) throw new Error(data.error || `Помилка ${res.status}`);
+  if (!res.ok) throw new Error(data.error || `Помилка сервера (${res.status})`);
   return data;
 }
 
@@ -94,8 +94,13 @@ document.addEventListener("visibilitychange", () => { if (!document.hidden) chec
 $("#login-form").addEventListener("submit", async (e) => {
   e.preventDefault();
   const f = e.target;
-  const btn = $("button", f);
+  const btn = $("button[type=submit]", f);
   $("#login-msg").textContent = "";
+  if (!f.login.value.trim() || !f.password.value) {
+    $("#login-msg").textContent = "Введіть логін і пароль";
+    (f.login.value.trim() ? f.password : f.login).focus();
+    return;
+  }
   btn.disabled = true;
   try {
     await api("/api/admin/login", { method: "POST", body: { login: f.login.value, password: f.password.value } });
@@ -269,10 +274,13 @@ $("#password-form").addEventListener("submit", async (e) => {
   const msg = $("#password-msg");
   msg.className = "msg";
   msg.textContent = "";
-  if (f.next.value !== f.repeat.value) {
-    msg.textContent = "Нові паролі не збігаються";
-    return;
-  }
+  const fail = (text, field) => { msg.textContent = text; field.focus(); };
+  if (!f.current.value) return fail("Введіть поточний пароль", f.current);
+  if (!f.next.value) return fail("Введіть новий пароль", f.next);
+  if (f.next.value.length < 10) return fail("Новий пароль має бути не коротший за 10 символів", f.next);
+  if (!f.repeat.value) return fail("Повторіть новий пароль", f.repeat);
+  if (f.next.value !== f.repeat.value) return fail("Нові паролі не збігаються. Введіть однаковий пароль в обидва поля", f.repeat);
+  if (f.next.value === f.current.value) return fail("Новий пароль збігається з поточним", f.next);
   try {
     await api("/api/admin/password", { method: "POST", body: { current: f.current.value, next: f.next.value } });
     f.reset();

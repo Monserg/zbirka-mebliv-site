@@ -13,7 +13,7 @@
 <body>
 
 <section class="login" id="login-view" hidden>
-  <form class="box" id="login-form">
+  <form class="box" id="login-form" novalidate>
     <h1>Вхід в адмінку</h1>
     <label>Логін
       <input name="login" autocomplete="username" required>
@@ -64,7 +64,7 @@
 
     <section data-panel="password" hidden>
       <h2>Зміна пароля</h2>
-      <form class="box" id="password-form">
+      <form class="box" id="password-form" novalidate>
         <input name="username" autocomplete="username" hidden>
         <label>Поточний пароль
           <span class="pw">

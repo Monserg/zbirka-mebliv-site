@@ -28,7 +28,7 @@ export async function onRequestPut({ request, env, waitUntil }) {
   try {
     body = await request.json();
   } catch {
-    return json({ error: "Bad request" }, 400);
+    return json({ error: "Некоректний запит" }, 400);
   }
   const { gallery = [] } = body;
   if (!Array.isArray(gallery) || gallery.length > 40) return json({ error: "У галереї до 40 фото" }, 400);

@@ -11,7 +11,7 @@ export async function onRequestPost({ request, env }) {
   try {
     data = await request.formData();
   } catch {
-    return json({ error: "Bad request" }, 400);
+    return json({ error: "Некоректний запит" }, 400);
   }
 
   // Пастка для ботів: справжні люди це поле не бачать і не заповнюють.
@@ -21,7 +21,7 @@ export async function onRequestPost({ request, env }) {
   const name = clip(data.get("name"), 80);
   const phone = clip(data.get("phone"), 30);
   const task = clip(data.get("task"), 800);
-  if (phone.replace(/\D/g, "").length < 9) return json({ error: "Phone required" }, 400);
+  if (phone.replace(/\D/g, "").length < 9) return json({ error: "Вкажіть телефон" }, 400);
 
   const time = new Date().toLocaleString("uk-UA", { timeZone: "Europe/Kyiv" });
   const text = [
@@ -48,5 +48,5 @@ export async function onRequestPost({ request, env }) {
       body: JSON.stringify({ chat_id: env.TG_CHAT_ID, text }),
     });
   }
-  return res.ok ? json({ ok: true }) : json({ error: "Telegram error" }, 502);
+  return res.ok ? json({ ok: true }) : json({ error: "Не вдалося надіслати в Telegram" }, 502);
 }
