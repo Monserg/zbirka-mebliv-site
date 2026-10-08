@@ -46,9 +46,10 @@ label { display: grid; gap: 4px; font-size: 14px; color: var(--muted); }
 .pw input { padding-right: 46px; }
 .eye { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); width: 38px; height: 34px; border: 0; background: none; color: var(--muted); border-radius: 8px; display: grid; place-items: center; }
 .eye:hover { color: var(--accent); background: var(--tint); }
-.eye .eye__shut { display: none; }
-.eye[aria-pressed="true"] .eye__open { display: none; }
-.eye[aria-pressed="true"] .eye__shut { display: block; }
+/* Перекреслене око — текст прихований (крапки); відкрите око — текст видно */
+.eye .eye__open { display: none; }
+.eye[aria-pressed="true"] .eye__open { display: block; }
+.eye[aria-pressed="true"] .eye__shut { display: none; }
 .msg { margin: 0; font-size: 14px; color: var(--danger); min-height: 1.2em; }
 .msg.ok { color: var(--ok); }
 
