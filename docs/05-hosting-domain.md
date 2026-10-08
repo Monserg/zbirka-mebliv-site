@@ -27,7 +27,9 @@
 
 Реєстратори: NIC.ua, Imena.ua, Hostiq.ua тощо.
 
-### Ідеї назви (перевірити, чи вільні)
+### Обрано (2026-10-08): `master-mebliv.com.ua` — вільний
+
+### Інші ідеї назви (перевірити, чи вільні)
 
 - `zbirka-mebliv.com.ua`
 - `mebli-master.com.ua`

@@ -58,14 +58,38 @@ function showLogin() {
 async function showApp() {
   $("#login-view").hidden = true;
   $("#app-view").hidden = false;
-  const res = await fetch("/api/content", { cache: "no-cache" });
-  const data = await res.json();
-  state.prices = data.prices || { groups: [] };
-  state.photos = { gallery: [], ...(data.photos || {}) };
-  dirty.prices = dirty.photos = false;
+  selectTab("prices");
+  touch();
+  // Після авто-виходу через бездіяльність незбережені зміни лишаються в формі.
+  if (!dirty.prices && !dirty.photos) {
+    const res = await fetch("/api/content", { cache: "no-cache" });
+    const data = await res.json();
+    state.prices = data.prices || { groups: [] };
+    state.photos = { gallery: [], ...(data.photos || {}) };
+  }
   renderPrices();
   renderPhotos();
 }
+
+// ---------- Авто-вихід після 5 хвилин бездіяльності ----------
+// Сервер теж завершує сесію після 5 хвилин без запитів (lib/util.js, SESSION_IDLE).
+
+const IDLE_MS = 5 * 60 * 1000;
+let lastActive = Date.now();
+function touch() { lastActive = Date.now(); }
+["pointerdown", "keydown", "touchstart", "input", "scroll"].forEach((ev) =>
+  document.addEventListener(ev, touch, { passive: true, capture: true }));
+
+async function checkIdle() {
+  if ($("#app-view").hidden || Date.now() - lastActive < IDLE_MS) return;
+  try { await api("/api/admin/logout", { method: "POST" }); } catch {}
+  showLogin();
+  $("#login-msg").textContent = dirty.prices || dirty.photos
+    ? "Вихід через 5 хвилин бездіяльності. Увійдіть знову — незбережені зміни на місці."
+    : "Вихід через 5 хвилин бездіяльності. Увійдіть знову.";
+}
+setInterval(checkIdle, 15 * 1000);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) checkIdle(); });
 
 $("#login-form").addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -93,12 +117,11 @@ $("#logout").addEventListener("click", async () => {
 
 // ---------- Вкладки ----------
 
-document.querySelectorAll("[data-tab]").forEach((tab) => {
-  tab.addEventListener("click", () => {
-    document.querySelectorAll("[data-tab]").forEach((t) => t.setAttribute("aria-selected", String(t === tab)));
-    document.querySelectorAll("[data-panel]").forEach((p) => (p.hidden = p.dataset.panel !== tab.dataset.tab));
-  });
-});
+function selectTab(name) {
+  document.querySelectorAll("[data-tab]").forEach((t) => t.setAttribute("aria-selected", String(t.dataset.tab === name)));
+  document.querySelectorAll("[data-panel]").forEach((p) => (p.hidden = p.dataset.panel !== name));
+}
+document.querySelectorAll("[data-tab]").forEach((tab) => tab.addEventListener("click", () => selectTab(tab.dataset.tab)));
 
 // ---------- Прайс ----------
 
@@ -230,6 +253,16 @@ window.addEventListener("beforeunload", (e) => {
 
 // ---------- Пароль ----------
 
+document.querySelectorAll(".eye").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const input = btn.parentElement.querySelector("input");
+    const show = input.type === "password";
+    input.type = show ? "text" : "password";
+    btn.setAttribute("aria-pressed", String(show));
+    btn.title = btn.ariaLabel = show ? "Сховати пароль" : "Показати пароль";
+  });
+});
+
 $("#password-form").addEventListener("submit", async (e) => {
   e.preventDefault();
   const f = e.target;
@@ -243,6 +276,7 @@ $("#password-form").addEventListener("submit", async (e) => {
   try {
     await api("/api/admin/password", { method: "POST", body: { current: f.current.value, next: f.next.value } });
     f.reset();
+    f.querySelectorAll(".eye[aria-pressed=true]").forEach((b) => b.click());
     msg.className = "msg ok";
     msg.textContent = "Пароль змінено";
   } catch (err) {
