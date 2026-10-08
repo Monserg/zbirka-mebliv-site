@@ -51,6 +51,9 @@ label { display: grid; gap: 4px; font-size: 14px; color: var(--muted); }
 .eye[aria-pressed="true"] .eye__open { display: block; }
 .eye[aria-pressed="true"] .eye__shut { display: none; }
 .msg { margin: 0; font-size: 14px; color: var(--danger); min-height: 1.2em; }
+/* Повернення на сайт з екрана входу (та сама кнопка, що в шапці адмінки) */
+.login__site { justify-self: center; font-size: 15px; font-weight: 500; color: var(--accent); text-decoration: none; padding: 4px 8px; }
+.login__site:hover { text-decoration: underline; }
 .msg.ok { color: var(--ok); }
 
 .head { background: var(--head-bg); color: var(--head-text); padding: 10px 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; position: sticky; top: 0; z-index: 5; }
