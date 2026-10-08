@@ -123,6 +123,27 @@ python3 scripts/build-demo.py
 7. Перевірити: сайт `https://zbirka-mebliv.pages.dev`, адмінка `/admin`
    (одразу змінити пароль), тестова заявка → має прийти в Telegram.
 
+### Деплой через API-токен (якщо `wrangler login` не бачить акаунт власника)
+
+З 2026-10-08 OAuth-токен wrangler під логіном розробника не має доступу до
+акаунта власника, хоча членство в порядку (`docs/01-decisions.md`). Надійний
+спосіб — API-токен, створений в акаунті власника:
+
+1. У панелі Cloudflare перемкнутися на акаунт власника → Manage Account →
+   Account API tokens → Create Token → Custom token.
+2. Права: **Account · Cloudflare Pages · Edit**, **Account · Workers KV
+   Storage · Edit**, **Account · Account Settings · Read**. Account Resources:
+   лише акаунт власника. Термін дії за потреби.
+3. Створити файл `.env` у папці проєкту (він у `.gitignore`, у репозиторій
+   не потрапляє):
+   ```
+   CLOUDFLARE_API_TOKEN=<токен>
+   ```
+   Wrangler читає `.env` сам; `npm run deploy` і `npm run secret` працюють
+   як раніше. Токен у чат, код чи документацію не вставляти.
+4. Відкликати токен можна в тому ж розділі панелі; тоді деплой знову
+   потребуватиме `wrangler login` під акаунтом, який має доступ.
+
 ### Оновлення сайту потім
 
 Змінили файли в `site/` або `functions/` → `npm run deploy`. Прайс і фото,
