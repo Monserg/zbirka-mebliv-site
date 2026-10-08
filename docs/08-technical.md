@@ -90,7 +90,10 @@ python3 scripts/build-demo.py
 
 ## Публікація на Cloudflare (перший раз)
 
-Робить власник акаунта (або разом з Claude; вхід в акаунт — тільки власник).
+Стан на 2026-10-08: кроки 1–3 виконано (акаунт власника Artemrd1@gmail.com,
+`wrangler login`, KV-сховище, проєкт Pages `zbirka-mebliv`). Лишилися
+кроки 4–7. Команди `npm run deploy` і `npm run secret` уже містять id
+акаунта власника, бо у `wrangler login` видно два акаунти.
 
 1. Зареєструватися на https://dash.cloudflare.com (безкоштовно, картка не потрібна).
 2. У папці проєкту (`zbirka-mebliv-site`):
@@ -99,22 +102,21 @@ python3 scripts/build-demo.py
    npx wrangler login
    ```
    (відкриється браузер, підтвердити доступ)
-3. Створити сховище і вписати його `id` у `wrangler.toml` замість
-   `REPLACE_WITH_KV_NAMESPACE_ID`:
+3. Створити сховище і вписати його `id` у `wrangler.toml`, створити проєкт:
    ```bash
-   npx wrangler kv namespace create CONTENT
+   CLOUDFLARE_ACCOUNT_ID=<id акаунта> npx wrangler kv namespace create CONTENT
+   CLOUDFLARE_ACCOUNT_ID=<id акаунта> npx wrangler pages project create zbirka-mebliv --production-branch main
    ```
-4. Створити проєкт і першу публікацію:
+4. Перша публікація:
    ```bash
    npm run deploy
    ```
-   (на питання про назву проєкту — `zbirka-mebliv`, production branch — `main`)
 5. Задати секрети (кожна команда попросить ввести значення):
    ```bash
-   npx wrangler pages secret put ADMIN_LOGIN
-   npx wrangler pages secret put ADMIN_PASSWORD
-   npx wrangler pages secret put TG_BOT_TOKEN
-   npx wrangler pages secret put TG_CHAT_ID
+   npm run secret -- ADMIN_LOGIN
+   npm run secret -- ADMIN_PASSWORD
+   npm run secret -- TG_BOT_TOKEN
+   npm run secret -- TG_CHAT_ID
    ```
    Пароль — довгий (12+ символів), не той, що від пошти чи банку.
 6. Ще раз `npm run deploy`, щоб секрети підхопилися.

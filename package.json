@@ -3,7 +3,8 @@
   "private": true,
   "scripts": {
     "dev": "WRANGLER_SEND_METRICS=false wrangler pages dev --port 8788 --ip 127.0.0.1",
-    "deploy": "wrangler pages deploy"
+    "deploy": "CLOUDFLARE_ACCOUNT_ID=9a6ad65d3eb2c1e30bcc0f7334e15f48 wrangler pages deploy --branch main --commit-dirty=true",
+    "secret": "CLOUDFLARE_ACCOUNT_ID=9a6ad65d3eb2c1e30bcc0f7334e15f48 wrangler pages secret put"
   },
   "devDependencies": {
     "wrangler": "^4"

@@ -20,7 +20,7 @@
 
 | Варіант | Приклад | Ціна/рік |
 |---|---|---|
-| Без домену | `zbirka-mebliv-khm.pages.dev` | 0 грн |
+| Без домену | `zbirka-mebliv.pages.dev` (вже працює; деякі DNS-фільтри блокують `pages.dev` цілком, див. `01-decisions.md`, 2026-10-08) | 0 грн |
 | `.in.ua` / `.km.ua` (міський домен Хмельницького) | `zbirka-mebliv.km.ua` | ~100–250 грн |
 | **`.com.ua`** (рекомендовано) | `zbirka-mebliv.com.ua` | ~150–300 грн |
 | `.com` | `zbirkamebliv.com` | ~450–600 грн |
