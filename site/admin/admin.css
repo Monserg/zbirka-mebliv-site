@@ -40,7 +40,9 @@ label { display: grid; gap: 4px; font-size: 14px; color: var(--muted); }
 .icon:hover { border-color: var(--accent); color: var(--accent); }
 .icon.del:hover { border-color: var(--danger); color: var(--danger); }
 
-.login { min-height: 100vh; display: grid; place-items: center; padding: 16px; }
+/* Екран входу: та сама шапка, що в адмінці (зі «Сайт ↗» справа), форма по центру */
+.login { min-height: 100vh; display: flex; flex-direction: column; }
+.login__body { flex: 1; display: grid; place-items: center; padding: 16px; }
 .box { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; display: grid; gap: 14px; width: 100%; max-width: 380px; }
 .pw { position: relative; display: block; }
 .pw input { padding-right: 46px; }
@@ -51,9 +53,6 @@ label { display: grid; gap: 4px; font-size: 14px; color: var(--muted); }
 .eye[aria-pressed="true"] .eye__open { display: block; }
 .eye[aria-pressed="true"] .eye__shut { display: none; }
 .msg { margin: 0; font-size: 14px; color: var(--danger); min-height: 1.2em; }
-/* Повернення на сайт з екрана входу (та сама кнопка, що в шапці адмінки) */
-.login__site { justify-self: center; font-size: 15px; font-weight: 500; color: var(--accent); text-decoration: none; padding: 4px 8px; }
-.login__site:hover { text-decoration: underline; }
 .msg.ok { color: var(--ok); }
 
 .head { background: var(--head-bg); color: var(--head-text); padding: 10px 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; position: sticky; top: 0; z-index: 5; }
