@@ -101,7 +101,9 @@ python3 scripts/build-demo.py
    npm install
    npx wrangler login
    ```
-   (відкриється браузер, підтвердити доступ)
+   (відкриється браузер; якщо Cloudflare запропонує вибрати акаунт — обрати
+   **акаунт власника**, бо токен бачить лише обраний; перевірити
+   `npx wrangler whoami`)
 3. Створити сховище і вписати його `id` у `wrangler.toml`, створити проєкт:
    ```bash
    CLOUDFLARE_ACCOUNT_ID=<id акаунта> npx wrangler kv namespace create CONTENT
@@ -123,11 +125,11 @@ python3 scripts/build-demo.py
 7. Перевірити: сайт `https://zbirka-mebliv.pages.dev`, адмінка `/admin`
    (одразу змінити пароль), тестова заявка → має прийти в Telegram.
 
-### Деплой через API-токен (якщо `wrangler login` не бачить акаунт власника)
+### Деплой через API-токен (запасний варіант)
 
-З 2026-10-08 OAuth-токен wrangler під логіном розробника не має доступу до
-акаунта власника, хоча членство в порядку (`docs/01-decisions.md`). Надійний
-спосіб — API-токен, створений в акаунті власника:
+Зазвичай досить `wrangler login` з вибором акаунта власника (див. крок 2 і
+`docs/01-decisions.md`, запис про помилку 10000). Якщо треба деплоїти без
+входу через браузер, можна використати API-токен акаунта власника:
 
 1. У панелі Cloudflare перемкнутися на акаунт власника → Manage Account →
    Account API tokens → Create Token → Custom token.
