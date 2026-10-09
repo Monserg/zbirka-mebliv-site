@@ -124,6 +124,7 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
 .form input:focus, .form textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
 .form .btn { width: 100%; }
 .hp { position: absolute; left: -9999px; }
+.form .bad { border-color: var(--bad); box-shadow: 0 0 0 1px var(--bad); }
 .err { display: none; color: var(--bad); font-size: 14px; }
 .err.show { display: block; }
 .note { font-size: 13px; color: var(--muted); margin: 0; }

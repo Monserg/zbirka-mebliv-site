@@ -21,14 +21,17 @@ export async function onRequestPost({ request, env }) {
   const name = clip(data.get("name"), 80);
   const phone = clip(data.get("phone"), 30);
   const task = clip(data.get("task"), 800);
+  // Ті самі правила, що й у формі (site/main.js): перевірку в браузері обійти не можна.
+  if (!name) return json({ error: "Вкажіть ім'я" }, 400);
   if (phone.replace(/\D/g, "").length < 9) return json({ error: "Вкажіть телефон" }, 400);
+  if (!task) return json({ error: "Опишіть, що потрібно зробити" }, 400);
 
   const time = new Date().toLocaleString("uk-UA", { timeZone: "Europe/Kyiv" });
   const text = [
     "🛠 Нова заявка з сайту",
-    `Ім'я: ${name || "—"}`,
+    `Ім'я: ${name}`,
     `Телефон: ${phone}`,
-    `Що зробити: ${task || "—"}`,
+    `Що зробити: ${task}`,
     `Час: ${time}`,
   ].join("\n");
 

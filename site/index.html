@@ -149,22 +149,24 @@
         </div>
       </div>
       <form class="form" id="lead-form" novalidate>
-        <label>Ім'я
-          <input name="name" autocomplete="name" placeholder="Олена">
+        <label>Ім'я *
+          <input name="name" autocomplete="name" placeholder="Олена" required>
+          <span class="err" data-for="name">Вкажіть ім'я</span>
         </label>
         <label>Телефон *
           <input name="phone" type="tel" autocomplete="tel" placeholder="067 123 45 67" required>
           <span class="err" data-for="phone">Вкажіть телефон, щоб ми могли передзвонити</span>
         </label>
-        <label>Що зробити
-          <textarea name="task" rows="3" placeholder="Зібрати шафу-купе 2 м, зняти старі двері"></textarea>
+        <label>Що зробити *
+          <textarea name="task" rows="3" placeholder="Зібрати шафу-купе 2 м, зняти старі двері" required></textarea>
+          <span class="err" data-for="task">Опишіть, що потрібно зробити</span>
         </label>
         <label>Фото (необов'язково)
           <input name="photo" type="file" accept="image/*">
         </label>
         <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
         <button class="btn btn--main" type="submit">Надіслати заявку</button>
-        <p class="note">Надсилаючи заявку, ви погоджуєтесь, що ми зв'яжемося з вами за вказаним телефоном.</p>
+        <p class="note">* — обов'язкові поля. Надсилаючи заявку, ви погоджуєтесь, що ми зв'яжемося з вами за вказаним телефоном.</p>
         <p class="status" id="form-status" role="status"></p>
       </form>
     </div>

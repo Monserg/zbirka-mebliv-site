@@ -135,19 +135,28 @@ const LEAD_ENDPOINT = "/api/lead";
 
 const form = document.getElementById("lead-form");
 const statusEl = document.getElementById("form-status");
-const phoneErr = form.querySelector('.err[data-for="phone"]');
 
-form.phone.addEventListener("input", () => phoneErr.classList.remove("show"));
+// Обов'язкові поля: ім'я, телефон (≥ 9 цифр), опис. Помилка зникає, щойно поле почали заповнювати.
+const REQUIRED = ["name", "phone", "task"];
+const isFilled = (field) =>
+  field === "phone" ? form.phone.value.replace(/\D/g, "").length >= 9 : form[field].value.trim() !== "";
+const setError = (field, on) => {
+  form[field].classList.toggle("bad", on);
+  form[field].setAttribute("aria-invalid", on ? "true" : "false");
+  form.querySelector(`.err[data-for="${field}"]`).classList.toggle("show", on);
+};
+REQUIRED.forEach((field) => form[field].addEventListener("input", () => setError(field, false)));
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   statusEl.className = "status";
   statusEl.textContent = "";
 
-  const digits = form.phone.value.replace(/\D/g, "");
-  if (digits.length < 9) {
-    phoneErr.classList.add("show");
-    form.phone.focus();
+  // Підсвічуємо всі незаповнені поля одразу, курсор — у перше з них.
+  const missing = REQUIRED.filter((field) => !isFilled(field));
+  REQUIRED.forEach((field) => setError(field, missing.includes(field)));
+  if (missing.length) {
+    form[missing[0]].focus();
     return;
   }
 
