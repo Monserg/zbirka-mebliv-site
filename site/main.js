@@ -59,19 +59,74 @@ function showShot(i) {
   lbPrev.hidden = lbNext.hidden = shots.length < 2;
 }
 
-function openLightbox(i, opener) {
+// Плавне збільшення: «привид» фото летить від мініатюри до великого фото (і назад при закритті),
+// тло тим часом затемнюється. Якщо в системі ввімкнено «зменшити рух» — без анімації.
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+const LB_MS = 320;
+let lbBusy = false;
+
+function thumbFor(i) { return document.querySelector(`#gallery [data-shot="${i}"] img`); }
+
+function flyGhost(src, from, to, radiusFrom, radiusTo) {
+  const g = document.createElement("img");
+  g.src = src; g.alt = ""; g.className = "lightbox__ghost";
+  document.body.appendChild(g);
+  const rect = (r, radius) => ({ top: `${r.top}px`, left: `${r.left}px`, width: `${r.width}px`, height: `${r.height}px`, borderRadius: radius });
+  const anim = g.animate([rect(from, radiusFrom), rect(to, radiusTo)], { duration: LB_MS, easing: "cubic-bezier(.2,.8,.2,1)", fill: "forwards" });
+  return anim.finished.catch(() => {}).then(() => g.remove());
+}
+
+// Чекаємо, поки велике фото завантажиться (зазвичай воно вже в кеші від мініатюри), але не довше 500 мс.
+function imgReady(img) {
+  if (img.complete && img.naturalWidth) return Promise.resolve();
+  return Promise.race([
+    new Promise((r) => { img.addEventListener("load", r, { once: true }); img.addEventListener("error", r, { once: true }); }),
+    new Promise((r) => setTimeout(r, 500)),
+  ]);
+}
+
+async function openLightbox(i, opener) {
+  if (lbBusy || !lightbox.hidden) return;
   lbOpener = opener || null;
   showShot(i);
   lightbox.hidden = false;
   document.body.classList.add("no-scroll");
-  document.getElementById("lightbox").querySelector(".lightbox__close").focus();
+  lightbox.querySelector(".lightbox__close").focus();
+  const thumb = opener && opener.querySelector("img");
+  if (!thumb || reduceMotion.matches) return;
+  lbBusy = true;
+  lightbox.classList.add("is-anim");
+  const fade = lightbox.animate([{ opacity: 0 }, { opacity: 1 }], { duration: LB_MS, easing: "ease-out" });
+  await imgReady(lbImg);
+  const to = lbImg.getBoundingClientRect();
+  if (to.width && !lightbox.hidden) await flyGhost(lbImg.src, thumb.getBoundingClientRect(), to, getComputedStyle(thumb).borderRadius, "8px");
+  await fade.finished.catch(() => {});
+  lightbox.classList.remove("is-anim");
+  lbBusy = false;
 }
 
-function closeLightbox() {
+async function closeLightbox() {
+  if (lbBusy || lightbox.hidden) return;
+  const thumb = thumbFor(lbIndex);
+  const focusTo = (thumb && thumb.closest("button")) || lbOpener;
+  const from = lbImg.getBoundingClientRect();
+  const to = thumb && thumb.getBoundingClientRect();
+  // Летимо назад лише якщо мініатюра зараз на екрані; інакше просто гаснемо.
+  const toVisible = to && to.width && to.bottom > 0 && to.top < window.innerHeight;
+  if (!reduceMotion.matches && from.width) {
+    lbBusy = true;
+    lightbox.classList.add("is-anim");
+    const fade = lightbox.animate([{ opacity: 1 }, { opacity: 0 }], { duration: toVisible ? LB_MS : 180, easing: "ease-in", fill: "forwards" });
+    if (toVisible) await flyGhost(lbImg.src, from, to, "8px", getComputedStyle(thumb).borderRadius);
+    await fade.finished.catch(() => {});
+    fade.cancel();
+    lightbox.classList.remove("is-anim");
+    lbBusy = false;
+  }
   lightbox.hidden = true;
   lbImg.removeAttribute("src");
   document.body.classList.remove("no-scroll");
-  if (lbOpener) lbOpener.focus();
+  if (focusTo) focusTo.focus();
 }
 
 document.getElementById("gallery").addEventListener("click", (e) => {
