@@ -21,6 +21,9 @@
 - Cloudflare Pages + Pages Functions (`functions/`) + KV (`CONTENT`).
 - Адмінка `/admin`: прайс, фото, зміна пароля; вхід за логіном і паролем.
 - Заявки: форма → `/api/lead` → Telegram Bot API.
+- MCP-сервер `/mcp` (`lib/mcp-calendar.js`, `lib/gcal.js`): дає Claude та іншим
+  MCP-клієнтам інструменти для Google-календаря власника через сервісний
+  акаунт. Налаштування — `docs/10-google-calendar-mcp.md`.
 - Локально: `npm run dev` → http://localhost:8788 (тестовий логін/пароль у `.dev.vars`).
 - Демо для клієнта: `python3 scripts/build-demo.py` → `dist/zbirka-mebliv-demo.html`.
 - Матеріали старого сайту на Wix — `reference/old-wix-site/` (лише довідка).

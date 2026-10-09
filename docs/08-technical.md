@@ -18,6 +18,7 @@
 | `auth` | `{login, salt, hash, iter}` (PBKDF2-SHA256) | після першої зміни пароля |
 | `sess:<токен>` | `{login, created, seen}`, TTL 7 днів; видаляється, якщо `seen` старіше 5 хв | при вході; `seen` оновлюється раз на хвилину |
 | `fail:<IP>` | лічильник невдалих входів, TTL 15 хв | при невдалому вході |
+| `gcal:token` | кеш access-токена Google для MCP-сервера, TTL ~55 хв | при першому виклику інструмента календаря |
 
 Поки `content:*` немає, `/api/content` віддає початкові файли
 `site/content/prices.json` і `site/content/photos.json`.
@@ -37,6 +38,7 @@ zbirka-mebliv-site/
 ├── functions/                 ← серверна частина (Pages Functions)
 │   ├── api/content.js         GET  /api/content       прайс + фото для сайту
 │   ├── api/lead.js            POST /api/lead          заявка → Telegram
+│   ├── mcp/[[path]].js        POST /mcp, /mcp/<токен>  MCP-сервер календаря (JSON-RPC)
 │   ├── photos/[[path]].js     GET  /photos/<файл>     фото з KV
 │   └── api/admin/
 │       ├── _middleware.js     перевірка сесії і заголовка X-Admin
@@ -48,6 +50,8 @@ zbirka-mebliv-site/
 │       ├── upload.js          POST /api/admin/upload  multipart "file" → {url}
 │       └── password.js        POST /api/admin/password {current, next}
 ├── lib/util.js                паролі (PBKDF2), сесії, читання контенту
+├── lib/gcal.js                Google Calendar API через сервісний акаунт (JWT RS256, кеш токена)
+├── lib/mcp-calendar.js        MCP-сервер: інструменти list_events, free_slots, create/update/delete_event
 ├── scripts/build-demo.py      збирає демо-файл для клієнта → dist/
 ├── wrangler.toml              налаштування Cloudflare (id KV вписати!)
 ├── package.json               npm run dev / npm run deploy
@@ -120,6 +124,8 @@ python3 scripts/build-demo.py
    npm run secret -- TG_BOT_TOKEN
    npm run secret -- TG_CHAT_ID
    ```
+   Для MCP-сервера календаря (необов'язково) — ще `MCP_TOKEN`,
+   `GCAL_SERVICE_ACCOUNT`, `GCAL_CALENDAR_ID` (див. `docs/10-google-calendar-mcp.md`).
    Пароль — довгий (12+ символів), не той, що від пошти чи банку.
 6. Ще раз `npm run deploy`, щоб секрети підхопилися.
 7. Перевірити: сайт `https://zbirka-mebliv.pages.dev`, адмінка `/admin`
@@ -169,3 +175,19 @@ Workers & Pages → проєкт → **Custom domains** → додати дом�
 - сайт на телефоні (375 px) і комп'ютері; демо-файл з диска.
 
 Пересилання в Telegram перевірено на живому сайті 2026-10-08: тестова заявка з фото прийшла власнику.
+
+## MCP-сервер календаря (`/mcp`)
+
+- Транспорт — MCP Streamable HTTP без стану: один `POST /mcp` з JSON-RPC
+  (`initialize`, `ping`, `tools/list`, `tools/call`; сповіщення → 202; батчі
+  підтримуються). `GET` → 405 (потоку подій від сервера немає).
+- Авторизація: `Authorization: Bearer <MCP_TOKEN>` або токен останнім
+  сегментом шляху `/mcp/<MCP_TOKEN>` (для claude.ai, де заголовок задати не
+  можна). Без токена або з коротшим за 16 символів секретом — 401 / 503.
+- Google: `lib/gcal.js` підписує JWT (RS256, WebCrypto) ключем сервісного
+  акаунта, міняє його на access-токен (scope `calendar.events`) і кешує в KV.
+  Усі часи нормалізуються до Europe/Kyiv (`parseWhen`, `fromKyiv`).
+- Перевірено 2026-10-09: юніт-тести в Node (підпис JWT звірено публічним
+  ключем; перехід на зимовий час; усі п'ять інструментів із підробленим
+  Google API), `wrangler pages dev` через curl і офіційний MCP Inspector.
+  Із живим Google Calendar ще не перевірялося — чекає на сервісний акаунт.

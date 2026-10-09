@@ -14,3 +14,5 @@ id = "5605719c90be4f948bb4b7ea4ae5b14f"
 #   npx wrangler pages secret put <НАЗВА>
 #   ADMIN_LOGIN, ADMIN_PASSWORD  — початковий вхід в адмінку
 #   TG_BOT_TOKEN, TG_CHAT_ID     — заявки в Telegram
+#   MCP_TOKEN, GCAL_SERVICE_ACCOUNT, GCAL_CALENDAR_ID — MCP-сервер календаря
+#                                  (docs/10-google-calendar-mcp.md)
