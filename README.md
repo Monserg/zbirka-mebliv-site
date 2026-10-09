@@ -85,7 +85,7 @@ Telegram чи поштою: відкривається подвійним клі
 | `docs/06-promotion.md` | Де брати клієнтів: Google-профіль, OLX тощо |
 | `docs/07-admin.md` | Інструкція до адмінки для власника |
 | `docs/08-technical.md` | Технічний опис: файли, API, запуск, публікація |
-| `docs/09-checklist-vlasnyka.md` | Чек-лист перевірки сайту для власника (після кожного оновлення) |
+| `docs/09-checklist-vlasnyka.md` | Чек-лист перевірки сайту для власника (після кожного оновлення); PDF-версія — `python3 scripts/build-checklist-pdf.py` |
 | `site/` | Сайт: `index.html`, `styles.css`, `main.js`, `content/`, `admin/` |
 | `functions/` | Серверна частина (Cloudflare Pages Functions) |
 | `lib/util.js` | Спільні функції: паролі, сесії, читання контенту |
@@ -93,6 +93,7 @@ Telegram чи поштою: відкривається подвійним клі
 | `package.json` | Команди `npm run dev` (локально) і `npm run deploy` (публікація) |
 | `.dev.vars` | Тестовий логін/пароль **лише для локального запуску** (не публікується) |
 | `scripts/build-demo.py` | Збирає демо-файл для клієнта → `dist/` |
+| `scripts/build-checklist-pdf.py` | Збирає чек-лист для власника у PDF → `dist/checklist-vlasnyka.pdf` |
 | `dist/` | Готовий демо-файл (один HTML, відкривається без сервера) |
 | `photos/` | Сюди класти фото робіт перед завантаженням в адмінку |
 | `reference/old-wix-site/` | Тексти, прайс і зображення старого сайту на Wix |
