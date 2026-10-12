@@ -13,7 +13,7 @@ async function api(path, { method = "GET", body, form } = {}) {
   const res = await fetch(path, opts);
   let data = {};
   try { data = await res.json(); } catch {}
-  if (res.status === 401 && path !== "/api/admin/login") showLogin();
+  if (res.status === 401 && path !== "/api/admin/login" && path !== "/api/admin/reset") showLogin();
   if (!res.ok) throw new Error(data.error || `Помилка сервера (${res.status})`);
   return data;
 }
@@ -96,6 +96,7 @@ $("#login-form").addEventListener("submit", async (e) => {
   e.preventDefault();
   const f = e.target;
   const btn = $("button[type=submit]", f);
+  $("#login-msg").className = "msg";
   $("#login-msg").textContent = "";
   if (!f.login.value.trim() || !f.password.value) {
     $("#login-msg").textContent = "Введіть логін і пароль";
@@ -110,6 +111,75 @@ $("#login-form").addEventListener("submit", async (e) => {
     await showApp();
   } catch (err) {
     $("#login-msg").textContent = err.message;
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+// ---------- Забули пароль: код у Telegram → новий пароль (functions/api/admin/reset.js) ----------
+
+const resetForm = $("#reset-form");
+const resetMsg = $("#reset-msg");
+
+function showReset(step) {
+  $("#login-form").hidden = true;
+  resetForm.hidden = false;
+  resetMsg.className = "msg";
+  resetMsg.textContent = "";
+  $("#reset-step1").hidden = step !== 1;
+  $("#reset-step2").hidden = step !== 2;
+  if (step === 2) resetForm.code.focus();
+}
+
+$("#forgot").addEventListener("click", () => showReset(1));
+$("#reset-back").addEventListener("click", () => {
+  resetForm.reset();
+  resetForm.querySelectorAll(".eye[aria-pressed=true]").forEach((b) => b.click());
+  resetForm.hidden = true;
+  $("#login-form").hidden = false;
+  $("#login-form [name=login]").focus();
+});
+
+async function sendResetCode(btn) {
+  resetMsg.className = "msg";
+  resetMsg.textContent = "";
+  btn.disabled = true;
+  try {
+    await api("/api/admin/reset", { method: "POST", body: { action: "send" } });
+    showReset(2);
+    resetMsg.className = "msg ok";
+    resetMsg.textContent = "Код надіслано в Telegram. Діє 10 хвилин.";
+  } catch (err) {
+    resetMsg.textContent = err.message;
+  } finally {
+    btn.disabled = false;
+  }
+}
+$("#reset-send").addEventListener("click", (e) => sendResetCode(e.currentTarget));
+$("#reset-resend").addEventListener("click", (e) => sendResetCode(e.currentTarget));
+
+resetForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const f = resetForm;
+  resetMsg.className = "msg";
+  resetMsg.textContent = "";
+  const fail = (text, field) => { resetMsg.textContent = text; field.focus(); };
+  const code = f.code.value.replace(/\D/g, "");
+  if (code.length !== 6) return fail("Введіть код із 6 цифр із Telegram", f.code);
+  if (!f.next.value) return fail("Введіть новий пароль", f.next);
+  if (f.next.value.length < 10) return fail("Новий пароль має бути не коротший за 10 символів", f.next);
+  if (!f.repeat.value) return fail("Повторіть новий пароль", f.repeat);
+  if (f.next.value !== f.repeat.value) return fail("Паролі не збігаються. Введіть однаковий пароль в обидва поля", f.repeat);
+  const btn = $("button[type=submit]", f);
+  btn.disabled = true;
+  try {
+    await api("/api/admin/reset", { method: "POST", body: { action: "confirm", code, next: f.next.value } });
+    $("#reset-back").click();
+    const msg = $("#login-msg");
+    msg.className = "msg ok";
+    msg.textContent = "Пароль змінено. Увійдіть з новим паролем.";
+  } catch (err) {
+    resetMsg.textContent = err.message;
   } finally {
     btn.disabled = false;
   }

@@ -7,7 +7,9 @@ export async function onRequest({ request, env, next, data }) {
   if (request.method !== "GET" && request.headers.get("X-Admin") !== "1") {
     return json({ error: "Некоректний запит" }, 400);
   }
-  if (new URL(request.url).pathname === "/api/admin/login") return next();
+  // Вхід і скидання пароля працюють без сесії.
+  const path = new URL(request.url).pathname;
+  if (path === "/api/admin/login" || path === "/api/admin/reset") return next();
 
   const session = await getSession(request, env);
   if (!session) return json({ error: "Потрібно увійти" }, 401);

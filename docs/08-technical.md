@@ -48,7 +48,8 @@ zbirka-mebliv-site/
 │       ├── prices.js          PUT  /api/admin/prices  {groups}
 │       ├── photos.js          PUT  /api/admin/photos  {gallery}; видаляє з KV фото, яких у галереї вже немає
 │       ├── upload.js          POST /api/admin/upload  multipart "file" → {url}
-│       └── password.js        POST /api/admin/password {current, next}
+│       ├── password.js        POST /api/admin/password {current, next}
+│       └── reset.js           POST /api/admin/reset   {action: send | confirm, code, next} — скидання пароля кодом у Telegram (без сесії)
 ├── lib/util.js                паролі (PBKDF2), сесії, читання контенту
 ├── lib/gcal.js                Google Calendar API через сервісний акаунт (JWT RS256, кеш токена)
 ├── lib/mcp-calendar.js        MCP-сервер: інструменти list_events, free_slots, create/update/delete_event
