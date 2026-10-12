@@ -74,20 +74,26 @@
 
 <main>
 
-  <section class="hero">
-    <div class="wrap">
-      <p class="eyebrow">Збірка і ремонт меблів у вас удома. Ціни відомі наперед.</p>
-      <h1>Збірка та ремонт меблів у&nbsp;Хмельницькому та&nbsp;районі</h1>
-      <div class="hero__row">
-        <p class="lead">Акуратно зберемо нові меблі та полагодимо старі. Кухні, шафи, ліжка, дивани, офісні меблі. Вартість називаємо до початку роботи.</p>
-        <div class="cta">
-          <a class="btn btn--main" href="tel:+380969758615">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2"/></svg>
-            Подзвонити
-          </a>
-          <a class="btn btn--line" href="#zaiavka">Залишити заявку</a>
+  <section class="hero" id="hero">
+    <div class="wrap hero__in">
+      <div class="hero__text">
+        <p class="eyebrow">Збірка і ремонт меблів у вас удома. Ціни відомі наперед.</p>
+        <h1>Збірка та ремонт меблів у&nbsp;Хмельницькому та&nbsp;районі</h1>
+        <div class="hero__row">
+          <p class="lead">Акуратно зберемо нові меблі та полагодимо старі. Кухні, шафи, ліжка, дивани, офісні меблі. Вартість називаємо до початку роботи.</p>
+          <div class="cta">
+            <a class="btn btn--main" href="tel:+380969758615">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2"/></svg>
+              Подзвонити
+            </a>
+            <a class="btn btn--line" href="#zaiavka">Залишити заявку</a>
+          </div>
         </div>
       </div>
+      <!-- Фото «Майстер за роботою» з адмінки (content/photos.json → hero). Без фото блок схований, заглушки немає -->
+      <figure class="hero__photo" id="hero-photo" hidden>
+        <img id="hero-img" alt="Майстер за роботою" decoding="async" fetchpriority="high">
+      </figure>
     </div>
   </section>
 

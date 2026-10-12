@@ -1,6 +1,6 @@
 // Адмінка: вхід, прайс, фото, зміна пароля. Сервер — functions/api/admin/*.
 const $ = (sel, root = document) => root.querySelector(sel);
-const state = { prices: { groups: [] }, photos: { gallery: [] } };
+const state = { prices: { groups: [] }, photos: { hero: "", gallery: [] } };
 const dirty = { prices: false, photos: false };
 
 async function api(path, { method = "GET", body, form } = {}) {
@@ -65,7 +65,8 @@ async function showApp() {
     const res = await fetch("/api/content", { cache: "no-cache" });
     const data = await res.json();
     state.prices = data.prices || { groups: [] };
-    state.photos = { gallery: [], ...(data.photos || {}) };
+    state.photos = { hero: "", gallery: [], ...(data.photos || {}) };
+    if (typeof state.photos.hero !== "string") state.photos.hero = "";
   }
   renderPrices();
   renderPhotos();
@@ -105,6 +106,7 @@ $("#login-form").addEventListener("submit", async (e) => {
   try {
     await api("/api/admin/login", { method: "POST", body: { login: f.login.value, password: f.password.value } });
     f.reset();
+    f.querySelectorAll(".eye[aria-pressed=true]").forEach((b) => b.click()); // знову ховаємо пароль
     await showApp();
   } catch (err) {
     $("#login-msg").textContent = err.message;
@@ -129,6 +131,9 @@ function selectTab(name) {
 document.querySelectorAll("[data-tab]").forEach((tab) => tab.addEventListener("click", () => selectTab(tab.dataset.tab)));
 
 // ---------- Прайс ----------
+// Ліміти ті самі, що на сервері (functions/api/admin/prices.js).
+const MAX_GROUPS = 10;
+const MAX_ITEMS = 10;
 
 function renderPrices() {
   const root = $("#groups");
@@ -156,12 +161,18 @@ function renderPrices() {
         } }, "✕"),
       ),
       items,
-      el("button", { class: "add", onclick: () => { g.items.push({ name: "", price: "" }); markDirty("prices"); renderPrices(); } }, "+ Додати послугу"),
+      g.items.length >= MAX_ITEMS
+        ? el("p", { class: "limit" }, `У групі максимум ${MAX_ITEMS} послуг`)
+        : el("button", { class: "add", onclick: () => { if (g.items.length >= MAX_ITEMS) return; g.items.push({ name: "", price: "" }); markDirty("prices"); renderPrices(); } }, "+ Додати послугу"),
     ));
   });
+  const full = groups.length >= MAX_GROUPS;
+  $("#add-group").hidden = full;
+  $("#groups-limit").hidden = !full;
 }
 
 $("#add-group").addEventListener("click", () => {
+  if (state.prices.groups.length >= MAX_GROUPS) return;
   state.prices.groups.push({ title: "", items: [{ name: "", price: "" }] });
   markDirty("prices");
   renderPrices();
@@ -209,7 +220,20 @@ function preview(src, emptyText) {
   return el("div", { class: "preview" }, src ? el("img", { src, alt: "" }) : emptyText);
 }
 
+// Фото «Майстер за роботою»: одне фото, без підпису; порожньо = на сайті блоку немає.
+function renderHero() {
+  const src = state.photos.hero;
+  $("#hero").replaceChildren(el("div", { class: "shot" },
+    preview(src, "Фото не завантажене"),
+    el("div", { class: "actions" },
+      el("button", { class: "btn", onclick: () => pickAndUpload((url) => (state.photos.hero = url)) }, src ? "Замінити" : "Завантажити"),
+      src ? el("button", { class: "btn", onclick: () => { state.photos.hero = ""; markDirty("photos"); renderPhotos(); } }, "Прибрати") : "",
+    ),
+  ));
+}
+
 function renderPhotos() {
+  renderHero();
   const root = $("#gallery");
   root.replaceChildren();
   const list = state.photos.gallery;

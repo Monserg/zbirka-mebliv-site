@@ -38,6 +38,7 @@ def main() -> None:
     prices = json.loads((SITE / "content" / "prices.json").read_text(encoding="utf-8"))
     photos = json.loads((SITE / "content" / "photos.json").read_text(encoding="utf-8"))
 
+    photos["hero"] = inline_image(photos.get("hero", ""))
     for p in photos.get("gallery", []):
         p["image"] = inline_image(p.get("image", ""))
 

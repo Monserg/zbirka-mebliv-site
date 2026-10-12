@@ -77,6 +77,7 @@ label { display: grid; gap: 4px; font-size: 14px; color: var(--muted); }
 .row .name { flex: 1 1 auto; min-width: 0; }
 .row .price { flex: 0 0 130px; }
 .group .add { margin-top: 4px; }
+.limit { color: var(--muted); font-size: 14px; margin: 8px 0 0; text-align: center; }
 
 .shot { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; }
 .preview { aspect-ratio: 4 / 3; border-radius: 10px; background: var(--mark-bg); display: grid; place-items: center; color: var(--mark-text); font-size: 14px; overflow: hidden; margin-bottom: 10px; }
@@ -85,6 +86,8 @@ label { display: grid; gap: 4px; font-size: 14px; color: var(--muted); }
 .actions .btn { background: var(--input-bg); border: 1px solid var(--line); border-radius: 10px; padding: 7px 12px; font-size: 14px; }
 .actions .btn:hover { border-color: var(--accent); color: var(--accent); }
 .gallery { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+.hero-shot { max-width: 420px; margin-bottom: 22px; }
+.hero-shot .preview { aspect-ratio: 4 / 3; }
 .shot .preview { aspect-ratio: 1; }
 .shot input { margin-bottom: 8px; }
 

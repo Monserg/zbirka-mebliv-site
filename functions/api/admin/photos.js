@@ -1,4 +1,5 @@
-// PUT /api/admin/photos {gallery: [{image, caption}]}
+// PUT /api/admin/photos {hero, gallery: [{image, caption}]}
+// hero — фото «Майстер за роботою» на першому екрані (порожній рядок = без фото).
 import { json } from "../../../lib/util.js";
 
 const isPhoto = (v) => v === "" || (typeof v === "string" && /^\/(photos|images)\/[\w.-]+$/.test(v));
@@ -9,8 +10,8 @@ const isPhoto = (v) => v === "" || (typeof v === "string" && /^\/(photos|images)
 // завантажити в іншій вкладці і ще не зберегти (ім'я файлу починається з часу).
 const GRACE_MS = 60 * 60 * 1000;
 
-async function deleteUnusedPhotos(env, gallery) {
-  const used = new Set(gallery.map((p) => p.image).filter((v) => v.startsWith("/photos/")).map((v) => v.slice("/photos/".length)));
+async function deleteUnusedPhotos(env, urls) {
+  const used = new Set(urls.filter((v) => v.startsWith("/photos/")).map((v) => v.slice("/photos/".length)));
   const now = Date.now();
   let cursor;
   do {
@@ -30,7 +31,8 @@ export async function onRequestPut({ request, env, waitUntil }) {
   } catch {
     return json({ error: "Некоректний запит" }, 400);
   }
-  const { gallery = [] } = body;
+  const { gallery = [], hero = "" } = body;
+  if (!isPhoto(hero)) return json({ error: "Невірне посилання на фото майстра" }, 400);
   if (!Array.isArray(gallery) || gallery.length > 40) return json({ error: "У галереї до 40 фото" }, 400);
 
   const clean = [];
@@ -40,8 +42,8 @@ export async function onRequestPut({ request, env, waitUntil }) {
     clean.push({ image: p.image || "", caption });
   }
 
-  await env.CONTENT.put("content:photos", JSON.stringify({ gallery: clean }));
+  await env.CONTENT.put("content:photos", JSON.stringify({ hero: hero || "", gallery: clean }));
   // Чистимо сховище у фоні, щоб не затримувати відповідь адмінці.
-  waitUntil(deleteUnusedPhotos(env, clean).catch(() => {}));
+  waitUntil(deleteUnusedPhotos(env, [hero || "", ...clean.map((p) => p.image)]).catch(() => {}));
   return json({ ok: true });
 }

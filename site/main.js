@@ -30,8 +30,22 @@ function renderPrices(data) {
 // Фото з галереї (без заглушок) — для перегляду на повний екран.
 let shots = [];
 
+// Фото «Майстер за роботою» на першому екрані: показуємо лише якщо воно завантажене в адмінці.
+function renderHero(src) {
+  const hero = document.getElementById("hero");
+  const fig = document.getElementById("hero-photo");
+  const img = document.getElementById("hero-img");
+  const hide = () => { fig.hidden = true; hero.classList.remove("hero--photo"); img.removeAttribute("src"); };
+  if (!src) return hide();
+  img.onerror = hide; // файл видалено зі сховища — ховаємо блок, а не показуємо зламане фото
+  img.src = src;
+  fig.hidden = false;
+  hero.classList.add("hero--photo");
+}
+
 function renderPhotos(data) {
   if (!data) return;
+  renderHero(typeof data.hero === "string" ? data.hero : "");
   shots = (data.gallery || []).filter((p) => p.image).map((p) => ({ image: p.image, caption: p.caption || "" }));
   let i = 0;
   document.getElementById("gallery").innerHTML = (data.gallery || []).map((p) => p.image

@@ -26,7 +26,12 @@
       <input name="login" autocomplete="username" required>
     </label>
     <label>Пароль
-      <input name="password" type="password" autocomplete="current-password" required>
+      <span class="pw">
+        <input name="password" type="password" autocomplete="current-password" required>
+        <button type="button" class="eye" aria-label="Показати пароль" aria-pressed="false" title="Показати пароль">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="eye__open" d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle class="eye__open" cx="12" cy="12" r="3"/><path class="eye__shut" d="M3 3l18 18M10.6 10.6a2 2 0 0 0 2.8 2.8M9.9 5.2A10.6 10.6 0 0 1 12 5c6.5 0 10 7 10 7a17.6 17.6 0 0 1-3.2 4.2M6.6 6.6C3.6 8.6 2 12 2 12s3.5 7 10 7c1.6 0 3-.4 4.3-1"/></svg>
+        </button>
+      </span>
     </label>
     <button class="primary" type="submit">Увійти</button>
     <p class="msg" id="login-msg" role="alert"></p>
@@ -54,9 +59,10 @@
         <h2>Прайс</h2>
         <button class="primary" data-save="prices">Зберегти прайс</button>
       </div>
-      <p class="hint">Змінюйте назви та ціни прямо в полях. Стрілки ↑↓ змінюють порядок. Зміни з'являться на сайті після натискання «Зберегти».</p>
+      <p class="hint">Змінюйте назви та ціни прямо в полях. Стрілки ↑↓ змінюють порядок груп і послуг, ✕ видаляє. До 10 груп, у кожній до 10 послуг. Зміни з'являться на сайті після натискання «Зберегти».</p>
       <div id="groups"></div>
       <button class="add" id="add-group">+ Додати групу</button>
+      <p class="limit" id="groups-limit" hidden>Максимум 10 груп. Щоб додати нову, видаліть одну з наявних.</p>
     </section>
 
     <section data-panel="photos" hidden>
@@ -65,7 +71,11 @@
         <button class="primary" data-save="photos">Зберегти фото</button>
       </div>
       <p class="hint">Фото з телефону автоматично зменшуються перед завантаженням. Зміни з'являться на сайті після натискання «Зберегти».</p>
-      <p class="hint">Галерея «Наші роботи». Порожнє місце показується на сайті як заглушка.</p>
+      <h3>Майстер за роботою</h3>
+      <p class="hint">Фото на першому екрані поруч із заголовком (на телефоні під кнопками). Краще горизонтальне. Без фото перший екран показується як є, без заглушки.</p>
+      <div class="hero-shot" id="hero"></div>
+      <h3>Наші роботи</h3>
+      <p class="hint">Галерея робіт. Порожнє місце показується на сайті як заглушка.</p>
       <div class="gallery" id="gallery"></div>
       <button class="add" id="add-photo">+ Додати місце для фото</button>
     </section>
