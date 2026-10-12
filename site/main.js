@@ -79,6 +79,10 @@ const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 const LB_MS = 320;
 let lbBusy = false;
 
+// Чекаємо кінця анімації, але не довше за її тривалість + запас: у схованій вкладці браузер
+// анімації не крутить, і без цього перегляд міг би «зависнути» в стані очікування.
+const waitAnim = (anim, ms) => Promise.race([anim.finished.catch(() => {}), new Promise((r) => setTimeout(r, ms + 150))]);
+
 function thumbFor(i) { return document.querySelector(`#gallery [data-shot="${i}"] img`); }
 
 function flyGhost(src, from, to, radiusFrom, radiusTo) {
@@ -87,7 +91,45 @@ function flyGhost(src, from, to, radiusFrom, radiusTo) {
   document.body.appendChild(g);
   const rect = (r, radius) => ({ top: `${r.top}px`, left: `${r.left}px`, width: `${r.width}px`, height: `${r.height}px`, borderRadius: radius });
   const anim = g.animate([rect(from, radiusFrom), rect(to, radiusTo)], { duration: LB_MS, easing: "cubic-bezier(.2,.8,.2,1)", fill: "forwards" });
-  return anim.finished.catch(() => {}).then(() => g.remove());
+  return waitAnim(anim, LB_MS).then(() => g.remove());
+}
+
+// Перехід між фото (стрілки, клавіші, свайп): поточне фото від'їжджає і гасне в бік руху,
+// нове в'їжджає з протилежного боку. Під час свайпу фото тягнеться за пальцем.
+const SLIDE_MS = 220;
+let lbSlide = null; // активна анімація переходу
+
+function cancelSlide() {
+  if (lbSlide) { lbSlide.cancel(); lbSlide = null; }
+  lbImg.style.transform = "";
+  lbImg.style.opacity = "";
+}
+
+async function slideTo(i, dir, fromX = 0) {
+  if (shots.length < 2 || lbBusy) return;
+  const target = (i + shots.length) % shots.length;
+  if (reduceMotion.matches || lightbox.hidden) { cancelSlide(); showShot(target); return; }
+  cancelSlide();
+  lbIndex = target; // одразу, щоб швидкі тапи рахувалися від нової позиції
+  const shift = lightbox.clientWidth * 0.5;
+  const out = lbImg.animate(
+    [{ transform: `translateX(${fromX}px)`, opacity: 1 }, { transform: `translateX(${-dir * shift}px)`, opacity: 0 }],
+    { duration: SLIDE_MS, easing: "ease-in", fill: "forwards" },
+  );
+  lbSlide = out;
+  await waitAnim(out, SLIDE_MS);
+  if (lbSlide !== out) return; // тим часом перемкнули ще раз
+  showShot(target);
+  await imgReady(lbImg);
+  if (lbSlide !== out) return;
+  const inn = lbImg.animate(
+    [{ transform: `translateX(${dir * shift}px)`, opacity: 0 }, { transform: "translateX(0)", opacity: 1 }],
+    { duration: SLIDE_MS, easing: "ease-out" },
+  );
+  lbSlide = inn;
+  out.cancel();
+  await waitAnim(inn, SLIDE_MS);
+  if (lbSlide === inn) lbSlide = null;
 }
 
 // Чекаємо, поки велике фото завантажиться (зазвичай воно вже в кеші від мініатюри), але не довше 500 мс.
@@ -114,13 +156,14 @@ async function openLightbox(i, opener) {
   await imgReady(lbImg);
   const to = lbImg.getBoundingClientRect();
   if (to.width && !lightbox.hidden) await flyGhost(lbImg.src, thumb.getBoundingClientRect(), to, getComputedStyle(thumb).borderRadius, "8px");
-  await fade.finished.catch(() => {});
+  await waitAnim(fade, LB_MS);
   lightbox.classList.remove("is-anim");
   lbBusy = false;
 }
 
 async function closeLightbox() {
   if (lbBusy || lightbox.hidden) return;
+  cancelSlide();
   const thumb = thumbFor(lbIndex);
   const focusTo = (thumb && thumb.closest("button")) || lbOpener;
   const from = lbImg.getBoundingClientRect();
@@ -132,7 +175,7 @@ async function closeLightbox() {
     lightbox.classList.add("is-anim");
     const fade = lightbox.animate([{ opacity: 1 }, { opacity: 0 }], { duration: toVisible ? LB_MS : 180, easing: "ease-in", fill: "forwards" });
     if (toVisible) await flyGhost(lbImg.src, from, to, "8px", getComputedStyle(thumb).borderRadius);
-    await fade.finished.catch(() => {});
+    await waitAnim(fade, toVisible ? LB_MS : 180);
     fade.cancel();
     lightbox.classList.remove("is-anim");
     lbBusy = false;
@@ -150,16 +193,38 @@ document.getElementById("gallery").addEventListener("click", (e) => {
 lightbox.addEventListener("click", (e) => {
   if (e.target.closest("[data-close]") && !e.target.closest(".lightbox__img")) closeLightbox();
 });
-lbPrev.addEventListener("click", () => showShot(lbIndex - 1));
-lbNext.addEventListener("click", () => showShot(lbIndex + 1));
+lbPrev.addEventListener("click", () => slideTo(lbIndex - 1, -1));
+lbNext.addEventListener("click", () => slideTo(lbIndex + 1, 1));
 
+// Свайп: фото йде за пальцем; відпустили далі ніж на 40 px — переходимо, інакше повертається на місце.
 let touchX = null;
-lightbox.addEventListener("touchstart", (e) => { touchX = e.changedTouches[0].clientX; }, { passive: true });
+let touchDX = 0;
+lightbox.addEventListener("touchstart", (e) => {
+  if (e.target.closest("button")) return;
+  touchX = e.changedTouches[0].clientX;
+  touchDX = 0;
+  cancelSlide();
+}, { passive: true });
+lightbox.addEventListener("touchmove", (e) => {
+  if (touchX === null || shots.length < 2 || reduceMotion.matches) return;
+  touchDX = e.changedTouches[0].clientX - touchX;
+  lbImg.style.transform = `translateX(${touchDX}px)`;
+  lbImg.style.opacity = String(Math.max(0.4, 1 - Math.abs(touchDX) / lightbox.clientWidth));
+}, { passive: true });
 lightbox.addEventListener("touchend", (e) => {
-  if (touchX === null || shots.length < 2) return;
+  if (touchX === null) return;
   const dx = e.changedTouches[0].clientX - touchX;
   touchX = null;
-  if (Math.abs(dx) > 40) showShot(dx < 0 ? lbIndex + 1 : lbIndex - 1);
+  if (shots.length < 2) return;
+  if (Math.abs(dx) > 40) {
+    slideTo(dx < 0 ? lbIndex + 1 : lbIndex - 1, dx < 0 ? 1 : -1, touchDX);
+  } else if (touchDX) {
+    // Повертаємо фото на місце
+    const back = lbImg.animate([{ transform: `translateX(${touchDX}px)` }, { transform: "translateX(0)" }], { duration: 160, easing: "ease-out" });
+    lbImg.style.transform = "";
+    lbImg.style.opacity = "";
+    back.finished.catch(() => {});
+  }
 }, { passive: true });
 
 // Бокове меню на телефоні: бургер у шапці відкриває, хрестик / тло / посилання / Esc закривають.
@@ -185,8 +250,8 @@ window.matchMedia("(min-width: 800px)").addEventListener("change", (e) => { if (
 document.addEventListener("keydown", (e) => {
   if (!lightbox.hidden) {
     if (e.key === "Escape") closeLightbox();
-    else if (e.key === "ArrowLeft") showShot(lbIndex - 1);
-    else if (e.key === "ArrowRight") showShot(lbIndex + 1);
+    else if (e.key === "ArrowLeft") slideTo(lbIndex - 1, -1);
+    else if (e.key === "ArrowRight") slideTo(lbIndex + 1, 1);
   } else if (e.key === "Escape" && drawer.classList.contains("open")) {
     setDrawer(false);
   }
