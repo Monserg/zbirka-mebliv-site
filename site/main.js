@@ -302,23 +302,45 @@ form.phone.addEventListener("input", () => {
   el.setSelectionRange(pos, pos);
 });
 
-// «Що зробити»: ширина не більша за форму (CSS), висота за вмістом, а в порожньому полі — за підказкою,
-// але не менша за висоту поля «Ім'я».
+// «Що зробити»: поле можна розтягувати за правий нижній кут. Ширина не більша за форму (CSS),
+// висота не менша за вміст (у порожньому полі — за підказку) і не менша за висоту поля «Ім'я».
+// Поки користувач сам не розтягнув поле, висота слідкує за вмістом; розтягнута вручну висота зберігається,
+// але не менша за вміст.
+const task = form.task;
+let taskUserH = 0; // висота, яку користувач виставив перетягуванням (0 — не чіпав)
+let taskDragging = false; // триває перетягування кута (у цей час поле не чіпаємо)
 const fitTask = () => {
-  const ta = form.task;
-  const text = ta.value;
-  if (!text) ta.value = ta.placeholder; // міряємо висоту підказки
-  ta.style.height = "auto";
-  const own = ta.scrollHeight + ta.offsetHeight - ta.clientHeight; // вміст + відступи + рамка
-  ta.style.height = `${Math.max(own, form.name.offsetHeight)}px`;
-  if (!text) ta.value = "";
+  if (taskDragging) return;
+  const text = task.value;
+  if (!text) task.value = task.placeholder; // міряємо висоту підказки
+  task.style.minHeight = "0"; // інакше міряємо старий мінімум, а не вміст
+  task.style.height = "auto";
+  const own = task.scrollHeight + task.offsetHeight - task.clientHeight; // вміст + відступи + рамка
+  const min = Math.max(own, form.name.offsetHeight);
+  task.style.minHeight = `${min}px`;
+  task.style.height = `${Math.max(taskUserH, min)}px`;
+  if (!text) task.value = "";
 };
-form.task.addEventListener("input", fitTask);
-form.addEventListener("reset", () => requestAnimationFrame(fitTask));
+task.addEventListener("input", fitTask);
+task.addEventListener("pointerdown", () => { taskDragging = true; });
+window.addEventListener("pointerup", () => {
+  if (!taskDragging) return;
+  taskDragging = false;
+  const h = task.offsetHeight;
+  taskUserH = h > parseFloat(task.style.minHeight) + 1 ? h : 0; // повернули до мінімуму → знову за вмістом
+  fitTask();
+});
+form.addEventListener("reset", () => requestAnimationFrame(() => {
+  taskUserH = 0;
+  task.style.width = "";
+  fitTask();
+}));
 let taskWidth = 0;
-new ResizeObserver(() => { // ширина змінилась → текст переноситься інакше
-  if (form.task.clientWidth !== taskWidth) { taskWidth = form.task.clientWidth; fitTask(); }
-}).observe(form);
+const taskObserver = new ResizeObserver(() => { // ширина змінилась (вікно чи кут) → текст переноситься інакше
+  if (task.clientWidth !== taskWidth) { taskWidth = task.clientWidth; fitTask(); }
+});
+taskObserver.observe(form);
+taskObserver.observe(task);
 document.fonts?.ready.then(fitTask);
 fitTask();
 
