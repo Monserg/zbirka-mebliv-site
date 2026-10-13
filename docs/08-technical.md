@@ -158,6 +158,13 @@ python3 scripts/build-demo.py
 Змінили файли в `site/` або `functions/` → `npm run deploy`. Прайс і фото,
 змінені через адмінку, при цьому **не перезаписуються** (вони в KV).
 
+**Кеш css/js.** На домені `master-mebliv.km.ua` Cloudflare віддає `.css`/`.js` з
+`max-age=14400` (4 години), тож без заходів браузер показував би стару верстку чи
+скрипт при вже новому HTML. Тому `npm run deploy` спершу запускає
+`scripts/stamp-assets.py`: той дописує в `site/index.html` і `site/admin/index.html`
+версію `?v=<хеш вмісту>` до `styles.css`, `main.js`, `admin.css`, `admin.js`.
+Файл змінився → змінилась адреса → браузер бере свіжий. Руками версію не ставити.
+
 ### Підключення домену
 
 Workers & Pages → проєкт → **Custom domains** → додати домен. Деталі —

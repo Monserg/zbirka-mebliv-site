@@ -45,10 +45,11 @@ def main() -> None:
     content = json.dumps({"prices": prices, "photos": photos}, ensure_ascii=False).replace("</", "<\\/")
     today = date.today().strftime("%d.%m.%Y")
 
-    html = html.replace('<link rel="stylesheet" href="styles.css">', f"<style>\n{css}\n</style>")
-    html = html.replace(
-        '<script src="main.js"></script>',
-        f"<script>window.__DEMO__ = true; window.__CONTENT__ = {content};</script>\n<script>\n{js}\n</script>",
+    html = re.sub(r'<link rel="stylesheet" href="styles\.css(?:\?v=[0-9a-f]+)?">', lambda m: f"<style>\n{css}\n</style>", html)
+    html = re.sub(
+        r'<script src="main\.js(?:\?v=[0-9a-f]+)?"></script>',
+        lambda m: f"<script>window.__DEMO__ = true; window.__CONTENT__ = {content};</script>\n<script>\n{js}\n</script>",
+        html,
     )
     # Плашка «Чернетка» на сайті прибрана (2026-10-07); у демо додаємо свою плашку одразу після <body>.
     html = html.replace(

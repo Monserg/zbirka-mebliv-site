@@ -283,11 +283,18 @@ const phoneDigits = (value) => {
   return d.replace(/^[1-9]+/, "").slice(0, 10); // номер починається з 0
 };
 const formatPhone = (n) => [n.slice(0, 3), n.slice(3, 6), n.slice(6, 8), n.slice(8, 10)].filter(Boolean).join(" ");
-form.phone.addEventListener("input", () => {
+const reformatPhone = () => {
   const el = form.phone;
   const atEnd = el.selectionStart === el.value.length;
   const digitsBefore = el.value.slice(0, el.selectionStart).replace(/\D/g, "").length;
   el.value = formatPhone(phoneDigits(el.value));
+  return { atEnd, digitsBefore };
+};
+// Автозаповнення браузера (Safari/Chrome) вставляє номер без події input, тому слухаємо й change/blur.
+["change", "blur"].forEach((ev) => form.phone.addEventListener(ev, reformatPhone));
+form.phone.addEventListener("input", () => {
+  const el = form.phone;
+  const { atEnd, digitsBefore } = reformatPhone();
   if (atEnd) return;
   // редагування посеред номера: курсор лишається біля тих самих цифр
   let pos = 0;
@@ -295,13 +302,15 @@ form.phone.addEventListener("input", () => {
   el.setSelectionRange(pos, pos);
 });
 
-// «Що зробити»: ширина не більша за форму (CSS), висота за вмістом, а в порожньому полі — за підказкою.
+// «Що зробити»: ширина не більша за форму (CSS), висота за вмістом, а в порожньому полі — за підказкою,
+// але не менша за висоту поля «Ім'я».
 const fitTask = () => {
   const ta = form.task;
   const text = ta.value;
   if (!text) ta.value = ta.placeholder; // міряємо висоту підказки
   ta.style.height = "auto";
-  ta.style.height = `${ta.scrollHeight + ta.offsetHeight - ta.clientHeight}px`; // + рамка
+  const own = ta.scrollHeight + ta.offsetHeight - ta.clientHeight; // вміст + відступи + рамка
+  ta.style.height = `${Math.max(own, form.name.offsetHeight)}px`;
   if (!text) ta.value = "";
 };
 form.task.addEventListener("input", fitTask);
