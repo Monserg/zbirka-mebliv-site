@@ -302,16 +302,27 @@ form.phone.addEventListener("input", () => {
   el.setSelectionRange(pos, pos);
 });
 
-// «Що зробити»: поле можна розтягувати за правий нижній кут. Ширина не більша за форму (CSS),
-// висота не менша за вміст (у порожньому полі — за підказку) і не менша за висоту поля «Ім'я».
+// «Що зробити»: поле можна розтягувати за правий нижній кут. Ширина не більша за форму (CSS) і не
+// менша за найдовший рядок тексту (у порожньому полі — підказки) плюс відступи зліва й справа;
+// висота не менша за вміст і не менша за висоту поля «Ім'я».
 // Поки користувач сам не розтягнув поле, висота слідкує за вмістом; розтягнута вручну висота зберігається,
 // але не менша за вміст.
 const task = form.task;
+const measureCtx = document.createElement("canvas").getContext("2d");
+const taskMinWidth = () => { // найдовший рядок + відступи й рамка, але не ширше за форму
+  const cs = getComputedStyle(task);
+  measureCtx.font = cs.font;
+  const lines = (task.value || task.placeholder).split("\n");
+  const text = Math.max(...lines.map((l) => measureCtx.measureText(l).width));
+  const frame = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight) + parseFloat(cs.borderLeftWidth) + parseFloat(cs.borderRightWidth);
+  return Math.min(Math.ceil(text) + frame + 2, task.parentElement.clientWidth);
+};
 let taskUserH = 0; // висота, яку користувач виставив перетягуванням (0 — не чіпав)
 let taskDragging = false; // триває перетягування кута (у цей час поле не чіпаємо)
 const fitTask = () => {
   if (taskDragging) return;
   const text = task.value;
+  task.style.minWidth = `${taskMinWidth()}px`;
   if (!text) task.value = task.placeholder; // міряємо висоту підказки
   task.style.minHeight = "0"; // інакше міряємо старий мінімум, а не вміст
   task.style.height = "auto";
