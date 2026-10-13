@@ -270,10 +270,53 @@ const LEAD_ENDPOINT = "/api/lead";
 const form = document.getElementById("lead-form");
 const statusEl = document.getElementById("form-status");
 
-// Обов'язкові поля: ім'я, телефон (≥ 9 цифр), опис. Помилка зникає, щойно поле почали заповнювати.
+// Телефон: «+38 (093) 299-44-55». Префікс +38 з'являється сам, вводяться 10 цифр номера,
+// що починається з 0 (код 3–9). Ті самі правила на сервері: lib/phone.js.
+const TASK_MIN = 4; // мінімум символів у «Що зробити»
+const PHONE_PREFIX = "+38 (";
+const phoneDigits = (value) => {
+  let d = value.replace(/\D/g, "");
+  if (d.startsWith("38")) d = d.slice(2); // префікс або вставлене «+380…»
+  if (/^[5679]/.test(d)) d = "0" + d; // «93 299 44 55» без початкового 0
+  return d.replace(/^[1-9]+/, "").slice(0, 10); // номер починається з 0
+};
+const formatPhone = (n) => {
+  let s = PHONE_PREFIX + n.slice(0, 3);
+  if (n.length > 3) s += ") " + n.slice(3, 6);
+  if (n.length > 6) s += "-" + n.slice(6, 8);
+  if (n.length > 8) s += "-" + n.slice(8, 10);
+  return s;
+};
+form.phone.addEventListener("input", () => { form.phone.value = formatPhone(phoneDigits(form.phone.value)); });
+form.phone.addEventListener("focus", () => { if (!form.phone.value) form.phone.value = PHONE_PREFIX; });
+form.phone.addEventListener("blur", () => { if (!phoneDigits(form.phone.value)) form.phone.value = ""; });
+
+// «Що зробити»: ширина не більша за форму (CSS), висота за вмістом, а в порожньому полі — за підказкою.
+const fitTask = () => {
+  const ta = form.task;
+  const text = ta.value;
+  if (!text) ta.value = ta.placeholder; // міряємо висоту підказки
+  ta.style.height = "auto";
+  ta.style.height = `${ta.scrollHeight + ta.offsetHeight - ta.clientHeight}px`; // + рамка
+  if (!text) ta.value = "";
+};
+form.task.addEventListener("input", fitTask);
+form.addEventListener("reset", () => requestAnimationFrame(fitTask));
+let taskWidth = 0;
+new ResizeObserver(() => { // ширина змінилась → текст переноситься інакше
+  if (form.task.clientWidth !== taskWidth) { taskWidth = form.task.clientWidth; fitTask(); }
+}).observe(form);
+document.fonts?.ready.then(fitTask);
+fitTask();
+
+// Обов'язкові поля: ім'я, телефон (український), опис (≥ 4 символи). Помилка зникає, щойно поле почали заповнювати.
 const REQUIRED = ["name", "phone", "task"];
-const isFilled = (field) =>
-  field === "phone" ? form.phone.value.replace(/\D/g, "").length >= 9 : form[field].value.trim() !== "";
+const isFilled = (field) => {
+  const v = form[field].value;
+  if (field === "phone") return /^0[3-9]\d{8}$/.test(phoneDigits(v));
+  if (field === "task") return v.trim().length >= TASK_MIN;
+  return v.trim() !== "";
+};
 const setError = (field, on) => {
   form[field].classList.toggle("bad", on);
   form[field].setAttribute("aria-invalid", on ? "true" : "false");

@@ -58,7 +58,7 @@
 - [ ] **Фото:** 5–15 фото робіт і одне фото «Майстер за роботою» — власник
       збирає, завантажить через адмінку
 - [x] **Назва** — «Майстер Меблів», вписано на сайт (2026-10-08)
-- [ ] **Домен** `master-mebliv.com.ua` — власник купує (NIC.ua / Imena.ua, ~200 грн/рік), потім підключити до Pages
+- [x] **Домен** `master-mebliv.km.ua` куплено в Imena.ua, 516 грн/рік (2026-10-13); замість `.com.ua`
 
 ## Етап 2. Підготовка до публікації (з Claude)
 
@@ -84,7 +84,45 @@
 - [ ] Завантажити фото, перевірити прайс
 - [ ] Власник проходить чек-лист перевірки ([docs/09-checklist-vlasnyka.md](docs/09-checklist-vlasnyka.md))
 - [x] Тестова заявка з сайту прийшла в Telegram (2026-10-08)
-- [ ] Купити домен `master-mebliv.com.ua` і підключити (обов'язково: `pages.dev` блокують DNS-фільтри)
+- [x] Домен підключено до Pages (2026-10-13), див. «Етап 3б»
+
+## Правки форми заявки (2026-10-13)
+
+- [x] Український телефон з маскою `+38 (093) 299-44-55`, опис ≥ 4 символи;
+      браузер і сервер, перевірено локально (сервер із підробленим Telegram, форма
+      в браузері)
+- [x] Авто-висота поля «Що зробити» опублікована (2026-10-13)
+- [x] Опубліковано `npm run deploy` (2026-10-13, правки телефона й опису); на живому сайті перевірено
+      підказку, `main.js` і відмови сервера (чужий код, неповний номер, текст < 4)
+- [ ] Власнику надіслати тестову заявку з https://master-mebliv.km.ua з номером
+      `+38 (0XX) XXX-XX-XX` і переконатися, що вона в Telegram
+- [ ] Демо для клієнта перезібрати лише якщо його знову віддавати
+      (`python3 scripts/build-demo.py`)
+
+## Етап 3б. Підключення домену `master-mebliv.km.ua` (виконано 2026-10-13)
+
+Зроблено: домен куплено в Imena.ua; зону додано в Cloudflare (акаунт власника,
+безкоштовний план); NS в Imena.ua замінено на `dylan.ns.cloudflare.com` і
+`julissa.ns.cloudflare.com`; зона *Active*; у Pages → `zbirka-mebliv` → Custom
+domains додано `master-mebliv.km.ua` і `www.master-mebliv.km.ua` (CNAME на
+`zbirka-mebliv.pages.dev` Cloudflare створив сам). Перевірено `curl`: сайт, `/api/content`
+і `www` відповідають 200 по https, `/admin` → 308 на `/admin/`. Документація
+(checklist, MCP-doc, README) виправлена з `.com.ua` на `.km.ua`, PDF перезібрано.
+
+Лишилось:
+- [ ] У Pages статус кореня `master-mebliv.km.ua` був «Verifying» (сайт вже
+      віддає 200); переконатися, що став *Active* (`www` уже *Active*, SSL enabled)
+- [ ] Власнику відкрити https://master-mebliv.km.ua, зайти в `/admin`, надіслати
+      тестову заявку з форми (прийде в Telegram) — чек-лист
+      ([docs/09-checklist-vlasnyka.md](docs/09-checklist-vlasnyka.md))
+- [ ] Оновити адресу конектора календаря (етап 3а), коли дійдемо до нього
+- [ ] Використовувати нову адресу в Google Business Profile і OLX (етап 4)
+- [ ] Дописати результат у `docs/01-decisions.md`, за потреби редірект
+      `www` → корінь (зараз обидві адреси віддають сайт)
+
+Кабінет Imena.ua: https://control.imena.ua/domains/1491649/ns (логін і пароль
+у власника, у репозиторій не записуємо). Claude in Chrome: якщо пише «extension
+disconnected», викликати `list_connected_browsers` і `select_browser`.
 
 ## Етап 3а. Календар для ШІ ([docs/10-google-calendar-mcp.md](docs/10-google-calendar-mcp.md))
 
@@ -92,7 +130,7 @@
 - [ ] Власник ділиться своїм календарем з адресою сервісного акаунта («Вносити зміни до подій»)
 - [ ] Задати секрети `GCAL_SERVICE_ACCOUNT`, `GCAL_CALENDAR_ID`, `MCP_TOKEN`; `npm run deploy`
 - [ ] Перевірити `list_events` через curl; підключити конектор у claude.ai власника
-- [ ] Після переходу на домен оновити адресу конектора
+- [ ] Домен уже працює: оновити адресу конектора на https://master-mebliv.km.ua/mcp
 
 ## Етап 4. Запуск і клієнти ([docs/06-promotion.md](docs/06-promotion.md))
 

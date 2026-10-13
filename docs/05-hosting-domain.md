@@ -58,6 +58,9 @@
 статусу *Active*, у Pages → `zbirka-mebliv` → Custom domains додати
 `master-mebliv.km.ua` і `www.master-mebliv.km.ua`.
 
+**Готово (2026-10-13):** зона *Active*, домен і `www` додано в Pages, обидві
+адреси віддають сайт по https.
+
 ### Інші ідеї назви (перевірити, чи вільні)
 
 - `zbirka-mebliv.com.ua`

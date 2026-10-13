@@ -133,7 +133,7 @@ claude mcp add --transport http kalendar https://zbirka-mebliv.pages.dev/mcp --h
 HTTP», адреса `/mcp`, заголовок `Authorization: Bearer <MCP_TOKEN>`, або адреса
 `/mcp/<MCP_TOKEN>` без заголовка.
 
-Після зміни домену (`master-mebliv.com.ua`) адресу в конекторі треба оновити.
+Після зміни домену (`master-mebliv.km.ua`) адресу в конекторі треба оновити.
 
 ## Безпека
 

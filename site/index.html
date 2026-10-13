@@ -160,12 +160,12 @@
           <span class="err" data-for="name">Вкажіть ім'я</span>
         </label>
         <label>Телефон *
-          <input name="phone" type="tel" autocomplete="tel" placeholder="067 123 45 67" required>
-          <span class="err" data-for="phone">Вкажіть телефон, щоб ми могли передзвонити</span>
+          <input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+38 (093) 299-44-55" maxlength="19" required>
+          <span class="err" data-for="phone">Вкажіть український номер у форматі +38 (093) 299-44-55</span>
         </label>
         <label>Що зробити *
-          <textarea name="task" rows="3" placeholder="Зібрати шафу-купе 2 м, зняти старі двері" required></textarea>
-          <span class="err" data-for="task">Опишіть, що потрібно зробити</span>
+          <textarea name="task" rows="2" minlength="4" placeholder="Зібрати шафу-купе 2 м, зняти старі двері" required></textarea>
+          <span class="err" data-for="task">Опишіть, що потрібно зробити (не менше 4 символів)</span>
         </label>
         <label>Фото (необов'язково)
           <input name="photo" type="file" accept="image/*">

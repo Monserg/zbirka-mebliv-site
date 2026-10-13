@@ -125,6 +125,7 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
   font: inherit; color: var(--text); background: var(--input-bg); border: 1px solid var(--line);
   border-radius: 10px; padding: 12px 14px; width: 100%;
 }
+.form textarea { resize: none; max-width: 100%; overflow-y: hidden; display: block; }
 .form input::placeholder, .form textarea::placeholder { color: var(--muted); opacity: .8; }
 .form input:focus, .form textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
 .form .btn { width: 100%; }

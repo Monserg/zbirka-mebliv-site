@@ -29,7 +29,7 @@
 | Демо-файл для клієнта (`dist/zbirka-mebliv-demo.html`) | ✅ зібрано |
 | Публікація на Cloudflare | ✅ https://zbirka-mebliv.pages.dev (акаунт власника) |
 | MCP-сервер «Календар майстра» (`/mcp`, Google Calendar для ШІ) | ✅ код і тести готові (2026-10-09); ⏳ потрібні сервісний акаунт Google і секрети |
-| Домен `master-mebliv.com.ua` | ⏳ власник купує; обов'язковий, бо `pages.dev` блокують DNS-фільтри |
+| Домен `master-mebliv.km.ua` | ✅ куплено 2026-10-13 в Imena.ua, DNS на Cloudflare, підключено до Pages: https://master-mebliv.km.ua (+ `www`); `pages.dev` лишається запасною адресою |
 
 Що робити далі, описано в [TODO.md](TODO.md).
 
