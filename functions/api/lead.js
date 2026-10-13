@@ -25,7 +25,7 @@ export async function onRequestPost({ request, env }) {
   // Ті самі правила, що й у формі (site/main.js): перевірку в браузері обійти не можна.
   if (!name) return json({ error: "Вкажіть ім'я" }, 400);
   const phone = normalizePhone(phoneRaw);
-  if (!phone) return json({ error: "Вкажіть український номер: +38 (093) 299-44-55" }, 400);
+  if (!phone) return json({ error: "Вкажіть український номер: 093 291 88 77" }, 400);
   if (task.length < TASK_MIN) return json({ error: `Опишіть, що потрібно зробити (не менше ${TASK_MIN} символів)` }, 400);
 
   const time = new Date().toLocaleString("uk-UA", { timeZone: "Europe/Kyiv" });

@@ -270,26 +270,30 @@ const LEAD_ENDPOINT = "/api/lead";
 const form = document.getElementById("lead-form");
 const statusEl = document.getElementById("form-status");
 
-// Телефон: «+38 (093) 299-44-55». Префікс +38 з'являється сам, вводяться 10 цифр номера,
-// що починається з 0 (код 3–9). Ті самі правила на сервері: lib/phone.js.
+// Телефон: у полі лише цифри, пробіли ставляться самі: «093 291 88 77». Номер український:
+// 10 цифр, починається з 0 і коду оператора чи міста. Вставка «+380…» і «380…» теж приймається.
+// Ті самі правила на сервері: lib/phone.js.
 const TASK_MIN = 4; // мінімум символів у «Що зробити»
-const PHONE_PREFIX = "+38 (";
+const UA_PHONE = /^0(?:[3-6]\d|73|9\d)\d{7}$/; // 03x–06x (міські, 050/063/066/067/068), 073, 09x
 const phoneDigits = (value) => {
+  if (/^\s*\+(?!38)/.test(value)) return ""; // чужий код країни (+7, +48…)
   let d = value.replace(/\D/g, "");
-  if (d.startsWith("38")) d = d.slice(2); // префікс або вставлене «+380…»
-  if (/^[5679]/.test(d)) d = "0" + d; // «93 299 44 55» без початкового 0
+  if (d.startsWith("38")) d = d.slice(2); // код країни зі вставленого «+380…»
+  if (/^[5679]/.test(d)) d = "0" + d; // «93 291 88 77» без початкового 0
   return d.replace(/^[1-9]+/, "").slice(0, 10); // номер починається з 0
 };
-const formatPhone = (n) => {
-  let s = PHONE_PREFIX + n.slice(0, 3);
-  if (n.length > 3) s += ") " + n.slice(3, 6);
-  if (n.length > 6) s += "-" + n.slice(6, 8);
-  if (n.length > 8) s += "-" + n.slice(8, 10);
-  return s;
-};
-form.phone.addEventListener("input", () => { form.phone.value = formatPhone(phoneDigits(form.phone.value)); });
-form.phone.addEventListener("focus", () => { if (!form.phone.value) form.phone.value = PHONE_PREFIX; });
-form.phone.addEventListener("blur", () => { if (!phoneDigits(form.phone.value)) form.phone.value = ""; });
+const formatPhone = (n) => [n.slice(0, 3), n.slice(3, 6), n.slice(6, 8), n.slice(8, 10)].filter(Boolean).join(" ");
+form.phone.addEventListener("input", () => {
+  const el = form.phone;
+  const atEnd = el.selectionStart === el.value.length;
+  const digitsBefore = el.value.slice(0, el.selectionStart).replace(/\D/g, "").length;
+  el.value = formatPhone(phoneDigits(el.value));
+  if (atEnd) return;
+  // редагування посеред номера: курсор лишається біля тих самих цифр
+  let pos = 0;
+  for (let seen = 0; pos < el.value.length && seen < digitsBefore; pos++) if (/\d/.test(el.value[pos])) seen++;
+  el.setSelectionRange(pos, pos);
+});
 
 // «Що зробити»: ширина не більша за форму (CSS), висота за вмістом, а в порожньому полі — за підказкою.
 const fitTask = () => {
@@ -313,7 +317,7 @@ fitTask();
 const REQUIRED = ["name", "phone", "task"];
 const isFilled = (field) => {
   const v = form[field].value;
-  if (field === "phone") return /^0[3-9]\d{8}$/.test(phoneDigits(v));
+  if (field === "phone") return UA_PHONE.test(phoneDigits(v));
   if (field === "task") return v.trim().length >= TASK_MIN;
   return v.trim() !== "";
 };
