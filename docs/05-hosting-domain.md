@@ -39,6 +39,25 @@
 
 ### Обрано (2026-10-08): `master-mebliv.com.ua` — вільний
 
+### Куплено (2026-10-13): `master-mebliv.km.ua` в Imena.ua
+
+Замість `.com.ua` власник купив `.km.ua` (516 грн/рік, діє до 13.10.2027,
+автопродовження увімкнено).
+
+**Особистий кабінет реєстратора:**
+
+- Домен у кабінеті (NS-сервери):
+  https://control.imena.ua/domains/1491649/ns
+  (вхід на https://control.imena.ua/)
+- Логін і пароль: у власника (стандартна пошта). У репозиторій не записуємо
+  (правило з `CLAUDE.md`); якщо забули — «Забули пароль?» на сторінці входу.
+
+**Де зараз DNS:** 2026-10-13 в Imena.ua NS замінено на Cloudflare
+(`dylan.ns.cloudflare.com`, `julissa.ns.cloudflare.com`). Зона
+`master-mebliv.km.ua` додана в акаунт Cloudflare власника; далі: дочекатися
+статусу *Active*, у Pages → `zbirka-mebliv` → Custom domains додати
+`master-mebliv.km.ua` і `www.master-mebliv.km.ua`.
+
 ### Інші ідеї назви (перевірити, чи вільні)
 
 - `zbirka-mebliv.com.ua`
